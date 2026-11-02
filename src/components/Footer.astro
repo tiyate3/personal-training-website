@@ -1,0 +1,90 @@
+---
+import { BRAND, BASE_GYM, NAV } from '../config';
+import SocialLinks from './SocialLinks.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <div class="brand">
+      <a class="logo" href="/">MUSTAFA<span class="accent">THEATHLETE</span></a>
+      <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <SocialLinks />
+    </div>
+
+    <nav aria-label="Footer">
+      <ul>
+        {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="contact">
+      <p class="label">Ready to start?</p>
+      <WhatsAppButton />
+    </div>
+  </div>
+  <div class="container legal">
+    <p>&copy; {year} {BRAND}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    background: var(--charcoal);
+    padding-top: 5rem;
+  }
+  .inner {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 860px) {
+    .inner {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.8rem;
+    text-decoration: none;
+  }
+  .brand p {
+    margin: 1rem 0 1.5rem;
+    max-width: 22rem;
+    font-size: 0.95rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  ul a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  ul a:hover {
+    color: var(--green);
+  }
+  .label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .legal {
+    margin-top: 4rem;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .legal p {
+    margin: 0;
+    font-size: 0.8rem;
+  }
+</style>

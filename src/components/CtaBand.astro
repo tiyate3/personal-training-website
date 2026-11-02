@@ -1,0 +1,21 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = "Let's get <span class='accent'>to work</span>",
+  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+} = Astro.props;
+---
+
+<section class="section section--alt cta-band">
+  <div class="container">
+    <p class="eyebrow">Start today</p>
+    <h2 set:html={title} />
+    <p class="lead">{text}</p>
+    <WhatsAppButton />
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import { WHATSAPP_URL } from '../config';
+---
+
+<a class="fab" href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label="Message Mustafa on WhatsApp">
+  <Icon name="whatsapp" />
+  <span class="tip" aria-hidden="true">Contact me</span>
+</a>
+
+<style>
+  .fab {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2rem);
+    bottom: clamp(1rem, 3vw, 2rem);
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 50%;
+    background: #25d366;
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.5),
+      0 0 18px rgba(37, 211, 102, 0.35);
+    transition: transform 0.25s;
+  }
+  .fab:hover {
+    transform: scale(1.06);
+  }
+  .fab :global(svg) {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+  .tip {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    white-space: nowrap;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: var(--charcoal-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: 0.2s;
+    pointer-events: none;
+  }
+  .fab:hover .tip,
+  .fab:focus-visible .tip {
+    opacity: 1;
+    transform: none;
+  }
+</style>

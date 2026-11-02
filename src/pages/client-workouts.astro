@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { BASE_GYM } from '../config';
+
+/*
+ * Client Workouts: photos and videos of clients training with Mustafa.
+ * Put files in /public/media and set `src`, e.g. { type: 'video', src: '/media/client-squat.mp4', service: 'Strength & Conditioning' }.
+ * Only post clients who have agreed to appear on the website.
+ */
+const workouts: { type: 'image' | 'video'; src?: string; service?: string; wide?: boolean }[] = [
+  { type: 'video', service: 'Strength & Conditioning', wide: true },
+  { type: 'image', service: 'Calisthenics' },
+  { type: 'image', service: 'Mobility & Flexibility' },
+  { type: 'video', service: 'Sport-Specific Training' },
+  { type: 'image', service: 'Rehabilitation' },
+  { type: 'image', service: 'Weight Loss', wide: true },
+  { type: 'video', service: 'Body Recomposition' },
+  { type: 'image' },
+  { type: 'image', wide: true },
+];
+---
+
+<Layout
+  title="Client Workouts"
+  description={`See what training with me looks like. Real client sessions at ${BASE_GYM} and home visits across London.`}
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Client workouts</p>
+      <h1>Inside<br />the <span class="accent">session</span></h1>
+      <p class="lead">Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="gallery">
+        {
+          workouts.map((w, i) => (
+            <figure class:list={['item', { wide: w.wide }]}>
+              <ImageSlot
+                label={`Client workout ${w.type} ${i + 1}`}
+                type={w.type}
+                src={w.src}
+              />
+              {w.service && <figcaption>{w.service}</figcaption>}
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Be the next <span class='accent'>session</span>" />
+</Layout>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: 1rem;
+    grid-auto-rows: clamp(22rem, 60vw, 30rem);
+  }
+  @media (min-width: 640px) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 24rem;
+    }
+  }
+  @media (min-width: 1000px) {
+    .gallery {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: 26rem;
+    }
+    .wide {
+      grid-column: span 2;
+    }
+  }
+  .item {
+    position: relative;
+    margin: 0;
+    min-width: 0;
+  }
+  .item :global(.slot) {
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  figcaption {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(5, 5, 6, 0.85);
+    border: 1px solid var(--line);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+</style>

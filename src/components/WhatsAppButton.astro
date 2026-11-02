@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+import { WHATSAPP_URL } from '../config';
+
+interface Props {
+  label?: string;
+  variant?: 'primary' | 'ghost';
+  class?: string;
+}
+const { label = 'Message me on WhatsApp', variant = 'primary', class: className = '' } = Astro.props;
+---
+
+<a
+  class:list={['btn', `btn--${variant}`, className]}
+  href={WHATSAPP_URL}
+  target="_blank"
+  rel="noopener"
+>
+  <span class="wa-badge"><Icon name="whatsapp" /></span>
+  <span>{label}</span>
+</a>

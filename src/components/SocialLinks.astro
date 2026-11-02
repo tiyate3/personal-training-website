@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro';
+import { SOCIALS } from '../config';
+
+const links = [
+  { name: 'instagram', label: 'Instagram', url: SOCIALS.instagram },
+  { name: 'tiktok', label: 'TikTok', url: SOCIALS.tiktok },
+] as const;
+---
+
+<ul class="socials">
+  {
+    links.map((l) =>
+      l.url ? (
+        <li>
+          <a href={l.url} target="_blank" rel="noopener" aria-label={`${l.label} (opens in new tab)`}>
+            <Icon name={l.name} />
+          </a>
+        </li>
+      ) : (
+        <li>
+          {/* TODO: add the URL in src/config.ts (SOCIALS) */}
+          <span class="pending" title={`${l.label} coming soon`} aria-label={`${l.label} coming soon`}>
+            <Icon name={l.name} />
+          </span>
+        </li>
+      ),
+    )
+  }
+</ul>
+
+<style>
+  .socials {
+    display: flex;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a,
+  .pending {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--text);
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  a:hover,
+  a:focus-visible {
+    color: var(--green);
+    border-color: var(--green);
+    box-shadow: var(--glow);
+  }
+  .pending {
+    opacity: 0.45;
+    cursor: default;
+  }
+  :global(.socials svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+</style>

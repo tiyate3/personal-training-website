@@ -1,0 +1,102 @@
+---
+import ImageSlot from './ImageSlot.astro';
+import { HOME_MEDIA } from '../config';
+---
+
+<div class="rotator" data-rotator>
+  {
+    HOME_MEDIA.map((m, i) => (
+      <div class:list={['frame', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+        <ImageSlot label={m.alt} type={m.type} src={m.src} ratio="4 / 5" />
+      </div>
+    ))
+  }
+  <div class="dots" role="tablist" aria-label="Choose slide">
+    {
+      HOME_MEDIA.map((_, i) => (
+        <button
+          role="tab"
+          aria-label={`Show slide ${i + 1}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          data-index={i}
+        />
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rotator]').forEach((root) => {
+    const frames = [...root.querySelectorAll<HTMLElement>('.frame')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('.dots button')];
+    if (frames.length < 2) return;
+    let current = 0;
+    let timer: number | undefined;
+
+    const show = (n: number) => {
+      frames[current].classList.remove('active');
+      frames[current].setAttribute('aria-hidden', 'true');
+      dots[current].setAttribute('aria-selected', 'false');
+      current = (n + frames.length) % frames.length;
+      frames[current].classList.add('active');
+      frames[current].removeAttribute('aria-hidden');
+      dots[current].setAttribute('aria-selected', 'true');
+    };
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start = () => {
+      if (reduced) return;
+      stop();
+      timer = window.setInterval(() => show(current + 1), 5000);
+    };
+    const stop = () => window.clearInterval(timer);
+
+    dots.forEach((d) =>
+      d.addEventListener('click', () => {
+        show(Number(d.dataset.index));
+        start();
+      }),
+    );
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    start();
+  });
+</script>
+
+<style>
+  .rotator {
+    position: relative;
+    aspect-ratio: 4 / 5;
+  }
+  .frame {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .frame.active {
+    opacity: 1;
+  }
+  .dots {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+  .dots button {
+    width: 1.75rem;
+    height: 3px;
+    padding: 0;
+    border: 0;
+    background: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .dots button[aria-selected='true'] {
+    background: var(--green);
+    box-shadow: var(--glow);
+  }
+</style>

@@ -1,0 +1,274 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import MediaRotator from '../components/MediaRotator.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { BRAND, BASE_GYM, SERVICES, SOCIALS, TRAINER, WHATSAPP_NUMBER } from '../config';
+
+const sameAs = Object.values(SOCIALS).filter(Boolean);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'HealthAndBeautyBusiness',
+  name: BRAND,
+  description: `Personal trainer in central London. Training at ${BASE_GYM} and home visits across London.`,
+  telephone: `+${WHATSAPP_NUMBER}`,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'London',
+    addressCountry: 'GB',
+  },
+  areaServed: [
+    { '@type': 'Place', name: 'Central London' },
+    { '@type': 'City', name: 'London' },
+  ],
+  founder: { '@type': 'Person', name: TRAINER, jobTitle: 'Personal Trainer' },
+  makesOffer: SERVICES.map((s) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name: `${s.name} personal training` },
+  })),
+  ...(sameAs.length ? { sameAs } : {}),
+};
+---
+
+<Layout
+  title={`Personal Trainer Central London | ${BRAND}`}
+  description={`Personal trainer in central London at ${BASE_GYM}, with home visits anywhere in London. Strength & conditioning, calisthenics, weight loss, body recomposition, mobility and rehab. Message me on WhatsApp.`}
+  schema={schema}
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-social">
+          <span class="follow">Follow my training</span>
+          <SocialLinks />
+        </div>
+        <p class="eyebrow">Personal Trainer · Central London</p>
+        <h1>Train<br />like an<br /><span class="accent">athlete</span></h1>
+        <p class="lead">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        <div class="hero-actions">
+          <WhatsAppButton label="Contact me" />
+          <a class="btn btn--ghost" href="/services/">View services</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <MediaRotator />
+      </div>
+    </div>
+  </section>
+
+  <!-- Where -->
+  <section class="section strip">
+    <div class="container strip-grid">
+      <div>
+        <span class="num">01</span>
+        <h3>Gym sessions</h3>
+        <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      </div>
+      <div>
+        <span class="num">02</span>
+        <h3>Home visits</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+      <div>
+        <span class="num">03</span>
+        <h3>Built for you</h3>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <section class="section section--alt">
+    <div class="container grid-2">
+      <ImageSlot label="Portrait of Mustafa" ratio="4 / 5" />
+      <div>
+        <p class="eyebrow">About me</p>
+        <h2>More than<br /><span class="accent">a workout</span></h2>
+        <p class="lead">
+          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.
+        </p>
+        <a class="btn btn--ghost" href="/about/">My story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services preview -->
+  <section class="section">
+    <div class="container">
+      <div class="services-head">
+        <div>
+          <p class="eyebrow">What I offer</p>
+          <h2>Services</h2>
+        </div>
+        <a class="btn btn--ghost" href="/services/">All services</a>
+      </div>
+      <ul class="services-list">
+        {
+          SERVICES.map((s, i) => (
+            <li>
+              <a href={`/services/#${s.slug}`}>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="name">{s.name}</span>
+                <span class="short">{s.short}</span>
+                <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>
+
+<style>
+  .hero {
+    padding-top: calc(var(--header-h) + clamp(2.5rem, 6vw, 5rem));
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+    background: radial-gradient(
+      ellipse 60% 50% at 80% 30%,
+      rgba(57, 255, 20, 0.07),
+      transparent 70%
+    );
+  }
+  .hero-grid {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero-social {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .follow {
+    font-family: var(--font-nav);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .hero-media {
+    width: 100%;
+    max-width: 30rem;
+    justify-self: center;
+  }
+
+  .strip {
+    padding-block: clamp(4rem, 8vw, 6rem);
+    border-block: 1px solid var(--line);
+  }
+  .strip-grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 760px) {
+    .strip-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .num {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .strip p {
+    margin: 0;
+  }
+
+  .services-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .services-head h2 {
+    margin: 0;
+  }
+  .services-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .services-list a {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    transition: padding 0.3s ease;
+  }
+  .services-list .num {
+    margin: 0;
+  }
+  .services-list .name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+    text-transform: uppercase;
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .services-list .short {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .services-list .arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    font-size: 1.5rem;
+    color: var(--muted);
+    transition:
+      color 0.3s,
+      transform 0.3s;
+  }
+  .services-list a:hover {
+    padding-left: 0.75rem;
+  }
+  .services-list a:hover .name,
+  .services-list a:hover .arrow {
+    color: var(--green);
+  }
+  .services-list a:hover .arrow {
+    transform: translateX(4px);
+  }
+  @media (min-width: 860px) {
+    .services-list a {
+      grid-template-columns: 4rem 1.1fr 1fr auto;
+    }
+    .services-list .short {
+      grid-column: 3;
+    }
+    .services-list .arrow {
+      grid-column: 4;
+      grid-row: 1;
+    }
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { BASE_GYM, SERVICES } from '../config';
+---
+
+<Layout
+  title="Personal Training Services in Central London"
+  description={`Strength & conditioning, sport-specific training, calisthenics, body recomposition, weight loss, mobility and rehabilitation. One-to-one personal training at ${BASE_GYM} or at home anywhere in London.`}
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">What I offer</p>
+      <h1>My<br /><span class="accent">services</span></h1>
+      <p class="lead">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua.
+      </p>
+      <nav class="jump" aria-label="Services on this page">
+        {SERVICES.map((s) => <a href={`#${s.slug}`}>{s.name}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  {
+    SERVICES.map((s, i) => (
+      <section id={s.slug} class:list={['section', 'service', { 'section--alt': i % 2 === 1 }]}>
+        <div class:list={['container', 'grid-2', { flip: i % 2 === 1 }]}>
+          <ImageSlot label={`${s.name} photo`} ratio="5 / 4" />
+          <div>
+            <span class="num">{String(i + 1).padStart(2, '0')} / {String(SERVICES.length).padStart(2, '0')}</span>
+            <h2>{s.name}</h2>
+            <p class="lead">{s.short}</p>
+            {s.body.map((para) => <p>{para}</p>)}
+            <WhatsAppButton label="Ask about this" variant="ghost" />
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section where">
+    <div class="container grid-2">
+      <div>
+        <p class="eyebrow">Where we train</p>
+        <h2>Gym or<br /><span class="accent">home</span></h2>
+      </div>
+      <div>
+        <p>
+          <strong>Gym sessions:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </p>
+        <p>
+          <strong>Home visits:</strong> Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        <p>Message me for rates and availability.</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Not sure which <span class='accent'>fits?</span>" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+</Layout>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2.5rem;
+  }
+  .jump a {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--muted);
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .jump a:hover {
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .num {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 1rem;
+    letter-spacing: 0.06em;
+  }
+  .service .lead {
+    color: var(--text);
+  }
+  @media (min-width: 860px) {
+    .flip > :first-child {
+      order: 2;
+    }
+  }
+  .where strong {
+    color: var(--text);
+  }
+  .where {
+    border-top: 1px solid var(--line);
+  }
+</style>

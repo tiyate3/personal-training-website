@@ -1,0 +1,214 @@
+---
+import { BRAND, NAV } from '../config';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="header">
+  <div class="container bar">
+    <a class="logo" href="/" aria-label={`${BRAND} home`}>
+      MUSTAFA<span class="accent">THEATHLETE</span>
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <WhatsAppButton label="Contact me" class="nav-cta" />
+    </nav>
+
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
+      <span class="visually-hidden">Menu</span>
+      <span class="bars" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('open', !open);
+    document.body.style.overflow = open ? '' : 'hidden';
+  });
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--header-h);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  /* Blur lives on a pseudo-element: backdrop-filter on .header itself would trap the fixed mobile menu inside the header bar. */
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(5, 5, 6, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.45rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 2.25rem;
+  }
+  .nav ul {
+    display: flex;
+    gap: 1.9rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav ul a {
+    position: relative;
+    font-family: var(--font-nav);
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .nav ul a:hover,
+  .nav ul a[aria-current='page'] {
+    color: var(--text);
+  }
+  .nav ul a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: var(--green);
+    box-shadow: var(--glow);
+  }
+  .nav :global(.nav-cta) {
+    padding: 0.7rem 1.3rem;
+    font-size: 0.78rem;
+  }
+  .menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 1020px) {
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .bars,
+    .bars::before,
+    .bars::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--text);
+      transition: transform 0.25s;
+    }
+    .bars {
+      position: relative;
+    }
+    .bars::before,
+    .bars::after {
+      content: '';
+      position: absolute;
+      left: 0;
+    }
+    .bars::before {
+      top: -6px;
+    }
+    .bars::after {
+      top: 6px;
+    }
+    .menu-toggle[aria-expanded='true'] .bars {
+      background: transparent;
+    }
+    .menu-toggle[aria-expanded='true'] .bars::before {
+      transform: translateY(6px) rotate(45deg);
+    }
+    .menu-toggle[aria-expanded='true'] .bars::after {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+    .nav {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      height: calc(100dvh - var(--header-h));
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 2.5rem;
+      padding: 3rem var(--pad);
+      background: var(--bg);
+      transform: translateX(100%);
+      visibility: hidden;
+      transition:
+        transform 0.3s ease,
+        visibility 0.3s;
+    }
+    .nav.open {
+      transform: none;
+      visibility: visible;
+    }
+    .nav ul {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .nav ul a {
+      font-family: var(--font-nav);
+      font-size: clamp(1.6rem, 7vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+    .nav ul a[aria-current='page'] {
+      color: var(--green);
+    }
+    .nav ul a[aria-current='page']::after {
+      display: none;
+    }
+    .nav :global(.nav-cta) {
+      padding: 1rem 1.9rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
