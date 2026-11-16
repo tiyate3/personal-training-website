@@ -3,8 +3,12 @@ import { BRAND, NAV } from '../config';
 import WhatsAppButton from './WhatsAppButton.astro';
 import logo from '../assets/mustafatheathlete-logo.svg';
 import logoWhite from '../assets/mustafatheathlete-logo-white.svg';
+import { withBase } from '../utils/paths';
 
-const path = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+const path = Astro.url.pathname.startsWith(base)
+  ? `/${Astro.url.pathname.slice(base.length)}`
+  : Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
@@ -14,7 +18,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 -->
 <header class="header">
   <div class="container bar">
-    <a class="logo" href="/" aria-label={`${BRAND} home`}>
+    <a class="logo" href={withBase('/')} aria-label={`${BRAND} home`}>
       <img class="logo-white" src={logoWhite.src} width="550" height="200" alt="" />
       <img class="logo-black" src={logo.src} width="550" height="200" alt="" />
     </a>
@@ -24,7 +28,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
         {
           NAV.map((item) => (
             <li>
-              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
               </a>
             </li>

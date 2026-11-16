@@ -10,16 +10,19 @@ interface Props {
   type?: 'image' | 'video';
   class?: string;
 }
+import { withBase } from '../utils/paths';
+
 const { label, ratio = '4 / 5', src, type = 'image', class: className = '' } = Astro.props;
+const mediaSrc = src?.startsWith('/') ? withBase(src) : src;
 ---
 
 <figure class:list={['slot', className]} style={`aspect-ratio: ${ratio}`}>
   {
-    src ? (
+    mediaSrc ? (
       type === 'video' ? (
-        <video src={src} autoplay muted loop playsinline aria-label={label} />
+        <video src={mediaSrc} autoplay muted loop playsinline aria-label={label} />
       ) : (
-        <img src={src} alt={label} loading="lazy" decoding="async" />
+        <img src={mediaSrc} alt={label} loading="lazy" decoding="async" />
       )
     ) : (
       <div class="empty" role="img" aria-label={`Placeholder: ${label}`}>

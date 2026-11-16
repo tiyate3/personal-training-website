@@ -5,6 +5,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 import MediaRotator from '../components/MediaRotator.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { BRAND, BASE_GYM, SERVICES, SOCIALS, TRAINER, WHATSAPP_NUMBER } from '../config';
+import { withBase } from '../utils/paths';
 
 const sameAs = Object.values(SOCIALS).filter(Boolean);
 const schema = {
@@ -52,7 +53,7 @@ const schema = {
       </p>
       <div class="hero-actions">
         <WhatsAppButton />
-        <a class="btn btn--ghost" href="/services/">Services</a>
+        <a class="btn btn--ghost" href={withBase('/services/')}>Services</a>
       </div>
     </div>
   </section>
@@ -81,13 +82,13 @@ const schema = {
     <div class="container">
       <div class="services-head">
         <h2>Services</h2>
-        <a class="text-link" href="/services/">All services <span aria-hidden="true">→</span></a>
+        <a class="text-link" href={withBase('/services/')}>All services <span aria-hidden="true">→</span></a>
       </div>
       <ul class="services-list">
         {
           SERVICES.map((s) => (
             <li>
-              <a href={`/services/#${s.slug}`}>
+              <a href={`${withBase('/services/')}#${s.slug}`}>
                 <span class="name">{s.name}</span>
                 <span class="short">{s.short}</span>
                 <span class="arrow" aria-hidden="true">→</span>

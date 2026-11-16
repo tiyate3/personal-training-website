@@ -2,6 +2,7 @@
 import { BRAND, BASE_GYM, NAV } from '../config';
 import SocialLinks from './SocialLinks.astro';
 import logoWhite from '../assets/mustafatheathlete-logo-white.svg';
+import { withBase } from '../utils/paths';
 
 const year = new Date().getFullYear();
 ---
@@ -9,7 +10,7 @@ const year = new Date().getFullYear();
 <footer class="footer on-dark">
   <div class="container inner">
     <div class="brand">
-      <a class="logo" href="/" aria-label={`${BRAND} home`}>
+      <a class="logo" href={withBase('/')} aria-label={`${BRAND} home`}>
         <img src={logoWhite.src} width="550" height="200" alt="" />
       </a>
       <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -20,7 +21,7 @@ const year = new Date().getFullYear();
       <p class="heading">Pages</p>
       <nav aria-label="Footer">
         <ul>
-          {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          {NAV.map((item) => <li><a href={withBase(item.href)}>{item.label}</a></li>)}
         </ul>
       </nav>
     </div>
