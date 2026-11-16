@@ -2,14 +2,14 @@
  * Site-wide settings. Everything Mustafa may need to change later lives here.
  */
 
-export const BRAND = 'MUSTAFATHEATHLETE';
+export const BRAND = 'Mustafa the Athlete';
 export const TRAINER = 'Mustafa';
 export const BASE_GYM = 'Fitness First Oxford Street';
 
 /** WhatsApp number in international format, digits only (no +, spaces or leading 0). */
 export const WHATSAPP_NUMBER = '447867871618';
 export const WHATSAPP_MESSAGE =
-  "Hi Mustafa, I found you on your website and I'm interested in personal training.";
+  "Hi Mustafa, I found you on your website and I'd like to book an intro session.";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 /**

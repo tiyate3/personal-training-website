@@ -6,16 +6,43 @@ interface Props {
   text?: string;
 }
 const {
-  title = "Let's get <span class='accent'>to work</span>",
+  title = "Start <span class='accent'>training</span>",
   text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 } = Astro.props;
 ---
 
-<section class="section section--alt cta-band">
-  <div class="container">
-    <p class="eyebrow">Start today</p>
+<section class="section section--alt cta">
+  <div class="container cta-grid">
     <h2 set:html={title} />
-    <p class="lead">{text}</p>
-    <WhatsAppButton />
+    <div>
+      <p class="lead">{text}</p>
+      <WhatsAppButton />
+    </div>
   </div>
 </section>
+
+<style>
+  .cta {
+    border-top: 1px solid var(--line);
+  }
+  .cta-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .cta h2 {
+    margin: 0;
+    max-width: 12ch;
+  }
+  @media (min-width: 860px) {
+    .cta-grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+      align-items: end;
+    }
+  }
+  @media (max-width: 520px) {
+    .cta :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

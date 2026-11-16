@@ -1,11 +1,11 @@
-# MUSTAFATHEATHLETE
+# Mustafa the Athlete
 
 The brand website for Mustafa, a personal trainer in central London. Its job is to be found by people searching for a personal trainer nearby and to turn them into Enquiries.
 
 ## People
 
 **Trainer**:
-Mustafa, the one personal trainer behind the MUSTAFATHEATHLETE brand.
+Mustafa, the one personal trainer behind the Mustafa the Athlete brand (handle style: MUSTAFATHEATHLETE).
 _Avoid_: Coach, PT, instructor
 
 **Client**:
@@ -53,3 +53,7 @@ _Avoid_: Showcase, client content
 **Enquiry**:
 A Prospect getting in touch with Mustafa, mainly through WhatsApp, with Instagram or TikTok messages as fallbacks. This is the only thing the website asks a Prospect to do; nothing is sold on the site.
 _Avoid_: Booking, lead, sign-up
+
+**Intro Session**:
+A Prospect's first session with Mustafa, which the website invites them to book by opening WhatsApp. The Enquiry is the request for it; the session itself is arranged in that chat, never on the site.
+_Avoid_: Discovery call, consultation, trial

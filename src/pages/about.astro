@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import CtaBand from '../components/CtaBand.astro';
+import FollowMe from '../components/FollowMe.astro';
 import { BASE_GYM, BRAND } from '../config';
 
 /*
@@ -11,16 +12,15 @@ import { BASE_GYM, BRAND } from '../config';
 
 // TODO: replace with Mustafa's real qualifications.
 const qualifications = [
-  { title: 'Level 3 Personal Trainer', detail: 'Lorem ipsum dolor sit amet' },
-  { title: 'Strength & Conditioning Coach', detail: 'Lorem ipsum dolor sit amet' },
-  { title: 'Sports Injury & Rehabilitation', detail: 'Lorem ipsum dolor sit amet' },
-  { title: 'First Aid & CPR', detail: 'Lorem ipsum dolor sit amet' },
+  { title: 'Lorem ipsum dolor sit amet', detail: 'Lorem ipsum dolor sit amet' },
+  { title: 'Consectetur adipiscing elit', detail: 'Lorem ipsum dolor sit amet' },
+  { title: 'Sed do eiusmod tempor', detail: 'Lorem ipsum dolor sit amet' },
 ];
 
 const principles = [
-  { title: 'Train with purpose', text: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.' },
-  { title: 'Technique first', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.' },
-  { title: 'Consistency over intensity', text: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
+  { title: 'Lorem ipsum dolor sit amet', text: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.' },
+  { title: 'Consectetur adipiscing elit', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.' },
+  { title: 'Sed do eiusmod tempor', text: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
 ];
 ---
 
@@ -30,8 +30,8 @@ const principles = [
 >
   <section class="page-hero">
     <div class="container">
-      <p class="eyebrow">About me</p>
-      <h1>Meet<br /><span class="accent">Mustafa</span></h1>
+      <div class="hero-follow"><FollowMe /></div>
+      <h1>About <span class="accent">Mustafa</span></h1>
       <p class="lead">
         Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </p>
@@ -43,8 +43,7 @@ const principles = [
     <div class="container grid-2">
       <ImageSlot label="Portrait of Mustafa" ratio="4 / 5" />
       <div>
-        <p class="eyebrow">My story</p>
-        <h2>Where it<br /><span class="accent">started</span></h2>
+        <h2>My story</h2>
         <!-- TODO: replace with Mustafa's real history -->
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
         <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
@@ -56,13 +55,11 @@ const principles = [
   <!-- Philosophy -->
   <section class="section section--alt">
     <div class="container">
-      <p class="eyebrow">Training philosophy</p>
-      <h2>How I<br /><span class="accent">coach</span></h2>
+      <h2>How I train</h2>
       <div class="principles">
         {
-          principles.map((p, i) => (
+          principles.map((p) => (
             <div class="principle">
-              <span class="num">{String(i + 1).padStart(2, '0')}</span>
               <h3>{p.title}</h3>
               <p>{p.text}</p>
             </div>
@@ -72,25 +69,10 @@ const principles = [
     </div>
   </section>
 
-  <!-- Motivation -->
-  <section class="section">
-    <div class="container grid-2">
-      <div>
-        <p class="eyebrow">What drives me</p>
-        <h2>My<br /><span class="accent">motivation</span></h2>
-        <!-- TODO: replace with Mustafa's real motivations -->
-        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.</p>
-      </div>
-      <ImageSlot label="Mustafa training" ratio="4 / 5" />
-    </div>
-  </section>
-
   <!-- Qualifications -->
   <section class="section section--alt">
     <div class="container">
-      <p class="eyebrow">Qualifications</p>
-      <h2>Certified &amp;<br /><span class="accent">experienced</span></h2>
+      <h2>Qualifications</h2>
       <ul class="quals">
         {
           qualifications.map((q) => (
@@ -107,14 +89,17 @@ const principles = [
     </div>
   </section>
 
-  <CtaBand title="Train with <span class='accent'>me</span>" />
+  <CtaBand />
 </Layout>
 
 <style>
+  .hero-follow {
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+  }
   .principles {
     display: grid;
-    gap: 2.5rem;
-    margin-top: 3rem;
+    gap: 0 3rem;
+    margin-top: 2rem;
   }
   @media (min-width: 860px) {
     .principles {
@@ -122,22 +107,15 @@ const principles = [
     }
   }
   .principle {
-    padding-top: 2rem;
+    padding: 1.5rem 0 1rem;
     border-top: 1px solid var(--line);
-  }
-  .num {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 800;
-    color: var(--green);
-    margin-bottom: 1rem;
   }
   .quals {
     list-style: none;
-    margin: 3rem 0 0;
+    margin: 2rem 0 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    column-gap: 3rem;
   }
   @media (min-width: 760px) {
     .quals {
@@ -146,12 +124,10 @@ const principles = [
   }
   .quals li {
     display: flex;
-    gap: 1.25rem;
+    gap: 1rem;
     align-items: flex-start;
-    padding: 1.75rem;
-    background: var(--charcoal-2);
-    border: 1px solid var(--line);
-    border-radius: 4px;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--line);
   }
   .quals strong {
     display: block;
@@ -163,11 +139,9 @@ const principles = [
   }
   .tick {
     flex: none;
-    width: 0.65rem;
-    height: 0.65rem;
-    margin-top: 0.55rem;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: var(--glow);
+    width: 0.9rem;
+    height: 2px;
+    margin-top: 0.8rem;
+    background: var(--accent);
   }
 </style>

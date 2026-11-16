@@ -7,7 +7,7 @@ import { HOME_MEDIA } from '../config';
   {
     HOME_MEDIA.map((m, i) => (
       <div class:list={['frame', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
-        <ImageSlot label={m.alt} type={m.type} src={m.src} ratio="4 / 5" />
+        <ImageSlot label={m.alt} type={m.type} src={m.src} ratio="auto" />
       </div>
     ))
   }
@@ -64,39 +64,56 @@ import { HOME_MEDIA } from '../config';
 </script>
 
 <style>
+  /* Fills its positioned parent (the home hero) */
   .rotator {
-    position: relative;
-    aspect-ratio: 4 / 5;
+    position: absolute;
+    inset: 0;
   }
   .frame {
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 1.2s ease;
   }
   .frame.active {
     opacity: 1;
   }
+  .frame :global(.slot) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .frame :global(.empty) {
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--header-h) + 1.25rem) var(--pad);
+    color: rgba(255, 255, 255, 0.82);
+    border-color: rgba(255, 255, 255, 0.38);
+    background: rgba(11, 12, 14, 0.48);
+  }
   .dots {
     position: absolute;
-    left: 50%;
-    bottom: 1.25rem;
-    transform: translateX(-50%);
+    left: max(var(--pad), calc((100% - var(--max)) / 2 + var(--pad)));
+    bottom: 1.75rem;
     display: flex;
-    gap: 0.5rem;
-    z-index: 2;
+    gap: 0.4rem;
+    z-index: 3;
   }
   .dots button {
-    width: 1.75rem;
-    height: 3px;
+    width: 1.5rem;
+    height: 2px;
     padding: 0;
     border: 0;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.3);
     cursor: pointer;
     transition: background 0.3s;
   }
+  .dots button::before {
+    content: '';
+    display: block;
+    margin: -10px 0;
+    height: 22px;
+  }
   .dots button[aria-selected='true'] {
-    background: var(--green);
-    box-shadow: var(--glow);
+    background: var(--accent);
   }
 </style>

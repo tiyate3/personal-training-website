@@ -1,0 +1,95 @@
+---
+/**
+ * "Follow my training" row: a label plus labelled Instagram / TikTok pills.
+ * Built for the black heroes. Links come from SOCIALS in src/config.ts;
+ * while a URL is empty the pill still shows but isn't clickable.
+ */
+import Icon from './Icon.astro';
+import { SOCIALS } from '../config';
+
+const links = [
+  { name: 'instagram', label: 'Instagram', url: SOCIALS.instagram },
+  { name: 'tiktok', label: 'TikTok', url: SOCIALS.tiktok },
+] as const;
+---
+
+<div class="follow">
+  <span class="label">Follow my training</span>
+  <ul>
+    {
+      links.map((l) => (
+        <li>
+          {l.url ? (
+            <a class="pill" href={l.url} target="_blank" rel="noopener" aria-label={`${l.label} (opens in new tab)`}>
+              <Icon name={l.name} />
+              <span>{l.label}</span>
+            </a>
+          ) : (
+            /* TODO: add the URL in src/config.ts (SOCIALS) */
+            <span class="pill" title={`${l.label} coming soon`}>
+              <Icon name={l.name} />
+              <span>{l.label}</span>
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .follow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+  }
+  .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  ul {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.95rem 0.5rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--text);
+    font-family: var(--font-nav);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+  a.pill:hover,
+  a.pill:focus-visible {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  span.pill {
+    cursor: default;
+  }
+  .pill :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+  }
+</style>

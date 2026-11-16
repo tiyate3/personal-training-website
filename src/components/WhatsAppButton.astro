@@ -7,7 +7,7 @@ interface Props {
   variant?: 'primary' | 'ghost';
   class?: string;
 }
-const { label = 'Message me on WhatsApp', variant = 'primary', class: className = '' } = Astro.props;
+const { label = 'Book an intro session', variant = 'primary', class: className = '' } = Astro.props;
 ---
 
 <a
@@ -16,6 +16,6 @@ const { label = 'Message me on WhatsApp', variant = 'primary', class: className 
   target="_blank"
   rel="noopener"
 >
-  <span class="wa-badge"><Icon name="whatsapp" /></span>
+  <Icon name="whatsapp" />
   <span>{label}</span>
 </a>

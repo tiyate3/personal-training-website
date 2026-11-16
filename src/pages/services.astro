@@ -12,15 +12,7 @@ import { BASE_GYM, SERVICES } from '../config';
 >
   <section class="page-hero">
     <div class="container">
-      <p class="eyebrow">What I offer</p>
-      <h1>My<br /><span class="accent">services</span></h1>
-      <p class="lead">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua.
-      </p>
-      <nav class="jump" aria-label="Services on this page">
-        {SERVICES.map((s) => <a href={`#${s.slug}`}>{s.name}</a>)}
-      </nav>
+      <h1>Training <span class="accent">services</span></h1>
     </div>
   </section>
 
@@ -28,9 +20,8 @@ import { BASE_GYM, SERVICES } from '../config';
     SERVICES.map((s, i) => (
       <section id={s.slug} class:list={['section', 'service', { 'section--alt': i % 2 === 1 }]}>
         <div class:list={['container', 'grid-2', { flip: i % 2 === 1 }]}>
-          <ImageSlot label={`${s.name} photo`} ratio="5 / 4" />
+          <ImageSlot label={`${s.name} photo`} ratio="5 / 4" class="service-photo" />
           <div>
-            <span class="num">{String(i + 1).padStart(2, '0')} / {String(SERVICES.length).padStart(2, '0')}</span>
             <h2>{s.name}</h2>
             <p class="lead">{s.short}</p>
             {s.body.map((para) => <p>{para}</p>)}
@@ -44,8 +35,7 @@ import { BASE_GYM, SERVICES } from '../config';
   <section class="section where">
     <div class="container grid-2">
       <div>
-        <p class="eyebrow">Where we train</p>
-        <h2>Gym or<br /><span class="accent">home</span></h2>
+        <h2>Where I train clients</h2>
       </div>
       <div>
         <p>
@@ -59,43 +49,17 @@ import { BASE_GYM, SERVICES } from '../config';
     </div>
   </section>
 
-  <CtaBand title="Not sure which <span class='accent'>fits?</span>" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+  <CtaBand />
 </Layout>
 
 <style>
-  .jump {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 2.5rem;
-  }
-  .jump a {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-decoration: none;
-    color: var(--muted);
-    transition:
-      color 0.2s,
-      border-color 0.2s;
-  }
-  .jump a:hover {
-    color: var(--green);
-    border-color: var(--green);
-  }
-  .num {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 800;
-    color: var(--green);
-    margin-bottom: 1rem;
-    letter-spacing: 0.06em;
-  }
   .service .lead {
     color: var(--text);
+  }
+  @media (max-width: 859px) {
+    .service :global(.service-photo) {
+      aspect-ratio: 16 / 9 !important;
+    }
   }
   @media (min-width: 860px) {
     .flip > :first-child {
@@ -104,8 +68,5 @@ import { BASE_GYM, SERVICES } from '../config';
   }
   .where strong {
     color: var(--text);
-  }
-  .where {
-    border-top: 1px solid var(--line);
   }
 </style>

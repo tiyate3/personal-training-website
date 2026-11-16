@@ -1,15 +1,22 @@
 ---
 import { BRAND, NAV } from '../config';
 import WhatsAppButton from './WhatsAppButton.astro';
+import logo from '../assets/mustafatheathlete-logo.svg';
+import logoWhite from '../assets/mustafatheathlete-logo-white.svg';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
+<!--
+  Transparent with the white logo while it sits over the black hero at the top of every page;
+  turns solid white with the black logo once the page scrolls past the hero (or the menu opens).
+-->
 <header class="header">
   <div class="container bar">
     <a class="logo" href="/" aria-label={`${BRAND} home`}>
-      MUSTAFA<span class="accent">THEATHLETE</span>
+      <img class="logo-white" src={logoWhite.src} width="550" height="200" alt="" />
+      <img class="logo-black" src={logo.src} width="550" height="200" alt="" />
     </a>
 
     <nav class="nav" id="site-nav" aria-label="Main">
@@ -24,7 +31,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
           ))
         }
       </ul>
-      <WhatsAppButton label="Contact me" class="nav-cta" />
+      <WhatsAppButton class="nav-cta" />
     </nav>
 
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
@@ -35,14 +42,26 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('.header');
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   const nav = document.getElementById('site-nav');
   toggle?.addEventListener('click', () => {
     const open = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!open));
     nav?.classList.toggle('open', !open);
+    header?.classList.toggle('menu-open', !open);
     document.body.style.overflow = open ? '' : 'hidden';
   });
+
+  // Every page opens with a black hero; go solid once it has scrolled out from under the header.
+  const hero = document.querySelector<HTMLElement>('main > section:first-child');
+  const update = () => {
+    const limit = hero ? hero.offsetHeight - (header?.offsetHeight ?? 0) : 0;
+    header?.classList.toggle('solid', window.scrollY > limit);
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
 </script>
 
 <style>
@@ -51,7 +70,18 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     inset: 0 0 auto;
     z-index: 50;
     height: var(--header-h);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s;
+  }
+  /* Over the hero: dark tokens, so nav text and menu bars are white */
+  .header:not(.solid, .menu-open) {
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.72);
+    --line: rgba(255, 255, 255, 0.25);
+  }
+  .header.solid,
+  .header.menu-open {
+    border-bottom-color: var(--line);
   }
   /* Blur lives on a pseudo-element: backdrop-filter on .header itself would trap the fixed mobile menu inside the header bar. */
   .header::before {
@@ -59,9 +89,15 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: rgba(5, 5, 6, 0.82);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .header.solid::before,
+  .header.menu-open::before {
+    opacity: 1;
   }
   .bar {
     height: 100%;
@@ -71,12 +107,23 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     gap: 2rem;
   }
   .logo {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 1.45rem;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    white-space: nowrap;
+    display: block;
+    flex: none;
+    /* The logo files carry generous padding, so the image is taller than the visible mark */
+    margin-left: -0.6rem;
+  }
+  .logo img {
+    height: 60px;
+    width: auto;
+  }
+  .logo-black,
+  .header.solid .logo-white,
+  .header.menu-open .logo-white {
+    display: none;
+  }
+  .header.solid .logo-black,
+  .header.menu-open .logo-black {
+    display: block;
   }
   .nav {
     display: flex;
@@ -93,9 +140,10 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   .nav ul a {
     position: relative;
     font-family: var(--font-nav);
-    font-size: 0.98rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     text-decoration: none;
     color: var(--muted);
     transition: color 0.2s;
@@ -111,12 +159,10 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     right: 0;
     bottom: -6px;
     height: 2px;
-    background: var(--green);
-    box-shadow: var(--glow);
+    background: var(--accent);
   }
   .nav :global(.nav-cta) {
-    padding: 0.7rem 1.3rem;
-    font-size: 0.78rem;
+    padding: 0.6rem 1.1rem;
   }
   .menu-toggle {
     display: none;
@@ -196,19 +242,18 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       font-family: var(--font-nav);
       font-size: clamp(1.6rem, 7vw, 2rem);
       font-weight: 700;
-      letter-spacing: 0;
+      letter-spacing: 0.06em;
       line-height: 1.1;
       letter-spacing: 0.02em;
     }
     .nav ul a[aria-current='page'] {
-      color: var(--green);
+      color: var(--accent-text);
     }
     .nav ul a[aria-current='page']::after {
       display: none;
     }
     .nav :global(.nav-cta) {
-      padding: 1rem 1.9rem;
-      font-size: 0.9rem;
+      padding: 0.9rem 1.5rem;
     }
   }
 </style>
