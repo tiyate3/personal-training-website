@@ -57,11 +57,14 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     document.body.style.overflow = open ? '' : 'hidden';
   });
 
-  // Every page opens with a black hero; go solid once it has scrolled out from under the header.
+  // Stay clear at the top, then use an opaque dark header over the dark hero and
+  // switch to the light header after the hero has passed underneath it.
   const hero = document.querySelector<HTMLElement>('main > section:first-child');
   const update = () => {
-    const limit = hero ? hero.offsetHeight - (header?.offsetHeight ?? 0) : 0;
-    header?.classList.toggle('solid', window.scrollY > limit);
+    const darkLimit = hero ? hero.offsetHeight - (header?.offsetHeight ?? 0) : 0;
+    const scrolled = window.scrollY > 8;
+    header?.classList.toggle('dark-solid', scrolled && window.scrollY <= darkLimit);
+    header?.classList.toggle('solid', window.scrollY > darkLimit);
   };
   update();
   window.addEventListener('scroll', update, { passive: true });
@@ -102,6 +105,10 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   .header.solid::before,
   .header.menu-open::before {
     opacity: 1;
+  }
+  .header.dark-solid::before {
+    opacity: 1;
+    background: rgba(11, 11, 11, 0.96);
   }
   .bar {
     height: 100%;
@@ -244,11 +251,10 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     }
     .nav ul a {
       font-family: var(--font-nav);
-      font-size: clamp(1.6rem, 7vw, 2rem);
+      font-size: clamp(1.25rem, 5.4vw, 1.55rem);
       font-weight: 700;
-      letter-spacing: 0.06em;
-      line-height: 1.1;
       letter-spacing: 0.02em;
+      line-height: 1.1;
     }
     .nav ul a[aria-current='page'] {
       color: var(--accent-text);
@@ -257,7 +263,8 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       display: none;
     }
     .nav :global(.nav-cta) {
-      padding: 0.9rem 1.5rem;
+      padding: 0.7rem 1.1rem;
+      font-size: 1rem;
     }
   }
 </style>

@@ -1,6 +1,6 @@
 # MUSTAFATHEATHLETE
 
-Informational website for Mustafa, personal trainer at Fitness First Oxford Street, central London.
+Informational website for Mustafa, personal trainer at Fitness First Marylebone, central London.
 Built with [Astro](https://astro.build) as a static site - no database, no backend.
 
 Domain terms (Client, Prospect, Service, Base Gym, Home Visit, Transformation…) are defined in [GLOSSARY.md](./GLOSSARY.md).

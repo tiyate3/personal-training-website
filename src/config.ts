@@ -4,7 +4,7 @@
 
 export const BRAND = 'Mustafa the Athlete';
 export const TRAINER = 'Mustafa';
-export const BASE_GYM = 'Fitness First Oxford Street';
+export const BASE_GYM = 'Fitness First Marylebone';
 
 /** WhatsApp number in international format, digits only (no +, spaces or leading 0). */
 export const WHATSAPP_NUMBER = '447867871618';
