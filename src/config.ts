@@ -5,6 +5,7 @@
 export const BRAND = 'Mustafa the Athlete';
 export const TRAINER = 'Mustafa';
 export const BASE_GYM = 'Fitness First Marylebone';
+export const GYM_ADDRESS = 'Cavendish Mews N, London W1W 6LA';
 
 /** WhatsApp number in international format, digits only (no +, spaces or leading 0). */
 export const WHATSAPP_NUMBER = '447867871618';
@@ -22,17 +23,16 @@ export const SOCIALS = {
 };
 
 export const NAV = [
-  { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
   { href: '/services/', label: 'Services' },
-  { href: '/testimonials/', label: 'Testimonials' },
-  { href: '/client-workouts/', label: 'Client Workouts' },
+  { href: '/testimonials/', label: 'Results' },
+  { href: '/client-workouts/', label: 'Client workouts' },
 ];
 
 export const SERVICES = [
   {
     slug: 'strength-and-conditioning',
-    name: 'Strength & Conditioning',
+    name: 'Strength & conditioning',
     short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
     body: [
       'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
@@ -41,7 +41,7 @@ export const SERVICES = [
   },
   {
     slug: 'sport-specific',
-    name: 'Sport-Specific Training',
+    name: 'Sport-specific training',
     short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     body: [
       'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
@@ -59,7 +59,7 @@ export const SERVICES = [
   },
   {
     slug: 'body-recomposition',
-    name: 'Body Recomposition',
+    name: 'Body recomposition',
     short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     body: [
       'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
@@ -68,7 +68,7 @@ export const SERVICES = [
   },
   {
     slug: 'weight-loss',
-    name: 'Weight Loss',
+    name: 'Weight loss',
     short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
     body: [
       'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
@@ -77,7 +77,7 @@ export const SERVICES = [
   },
   {
     slug: 'mobility-and-flexibility',
-    name: 'Mobility & Flexibility',
+    name: 'Mobility & flexibility',
     short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     body: [
       'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',

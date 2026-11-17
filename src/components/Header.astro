@@ -5,10 +5,12 @@ import logo from '../assets/mustafatheathlete-logo.svg';
 import logoWhite from '../assets/mustafatheathlete-logo-white.svg';
 import { withBase } from '../utils/paths';
 
-const base = import.meta.env.BASE_URL;
-const path = Astro.url.pathname.startsWith(base)
-  ? `/${Astro.url.pathname.slice(base.length)}`
-  : Astro.url.pathname;
+// Current page path with the deploy base stripped, always in the form '/services/'
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+let path = Astro.url.pathname;
+if (base && path.startsWith(base)) path = path.slice(base.length);
+path = `/${path.replace(/^\/+/, '')}`;
+if (!path.endsWith('/')) path += '/';
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
@@ -29,13 +31,13 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
           NAV.map((item) => (
             <li>
               <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
-                {item.label}
+                {item.href === '/services/' ? 'Training' : item.label}
               </a>
             </li>
           ))
         }
       </ul>
-      <WhatsAppButton class="nav-cta" />
+      <WhatsAppButton class="nav-cta" variant="ghost" label="Book a session" icon={false} />
     </nav>
 
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
@@ -57,14 +59,18 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     document.body.style.overflow = open ? '' : 'hidden';
   });
 
-  // Stay clear at the top, then use an opaque dark header over the dark hero and
-  // switch to the light header after the hero has passed underneath it.
-  const hero = document.querySelector<HTMLElement>('main > section:first-child');
+  // Clear over the top of the hero; once scrolled, the header takes on the colour of whatever
+  // section is passing underneath it: black over black sections, white over light ones.
   const update = () => {
-    const darkLimit = hero ? hero.offsetHeight - (header?.offsetHeight ?? 0) : 0;
+    if (!header) return;
     const scrolled = window.scrollY > 8;
-    header?.classList.toggle('dark-solid', scrolled && window.scrollY <= darkLimit);
-    header?.classList.toggle('solid', window.scrollY > darkLimit);
+    const y = header.offsetHeight + 1;
+    const under = document
+      .elementsFromPoint(window.innerWidth / 2, y)
+      .find((el) => !header.contains(el) && !el.closest('.fab'));
+    const dark = !!under?.closest('.on-dark, .page-hero');
+    header.classList.toggle('dark-solid', scrolled && dark);
+    header.classList.toggle('solid', scrolled && !dark);
   };
   update();
   window.addEventListener('scroll', update, { passive: true });
@@ -90,15 +96,13 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   .header.menu-open {
     border-bottom-color: var(--line);
   }
-  /* Blur lives on a pseudo-element: backdrop-filter on .header itself would trap the fixed mobile menu inside the header bar. */
+  /* Flat backing colour on a pseudo-element, so it can fade in without touching the fixed mobile menu */
   .header::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: #ffffff;
     opacity: 0;
     transition: opacity 0.25s;
   }
@@ -108,7 +112,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   }
   .header.dark-solid::before {
     opacity: 1;
-    background: rgba(11, 11, 11, 0.96);
+    background: var(--black);
   }
   .bar {
     height: 100%;
@@ -143,85 +147,107 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   }
   .nav ul {
     display: flex;
-    gap: 1.9rem;
+    gap: 2.25rem;
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .nav ul a {
     position: relative;
-    font-family: var(--font-nav);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-family: var(--font-display);
+    font-size: 0.94rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
     text-decoration: none;
+    white-space: nowrap;
     color: var(--muted);
-    transition: color 0.2s;
+    transition: color 0.3s var(--ease);
   }
   .nav ul a:hover,
+  .nav ul a:focus-visible,
   .nav ul a[aria-current='page'] {
     color: var(--text);
   }
-  .nav ul a[aria-current='page']::after {
+  /* Hairline underline: draws in from the left on hover, stays on the current page */
+  .nav ul a::after {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
     bottom: -6px;
-    height: 2px;
-    background: var(--accent);
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease);
+  }
+  .nav ul a:hover::after,
+  .nav ul a:focus-visible::after,
+  .nav ul a[aria-current='page']::after {
+    transform: scaleX(1);
   }
   .nav :global(.nav-cta) {
-    padding: 0.6rem 1.1rem;
+    padding: 0.7rem 1.25rem;
+    border-width: 1px;
+    border-radius: 0;
+    font-family: var(--font-display);
+    font-size: 0.88rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+  .nav :global(.nav-cta:hover),
+  .nav :global(.nav-cta:focus-visible) {
+    transform: none;
+  }
+  /* Over dark backgrounds the button fills white on hover, so its label turns black */
+  .header:not(.solid, .menu-open) .nav :global(.nav-cta:hover),
+  .header:not(.solid, .menu-open) .nav :global(.nav-cta:focus-visible) {
+    color: var(--black);
   }
   .menu-toggle {
     display: none;
   }
 
-  @media (max-width: 1020px) {
+  @media (max-width: 960px) {
     .menu-toggle {
       display: grid;
       place-items: center;
       width: 2.75rem;
       height: 2.75rem;
+      margin-right: -0.6rem;
+      padding: 0;
       background: none;
-      border: 1px solid var(--line);
-      border-radius: 50%;
+      border: 0;
       cursor: pointer;
     }
-    .bars,
-    .bars::before,
-    .bars::after {
-      display: block;
-      width: 18px;
-      height: 2px;
-      background: var(--text);
-      transition: transform 0.25s;
-    }
+    /* Two thin lines that cross into an X when the menu is open */
     .bars {
       position: relative;
+      display: block;
+      width: 24px;
+      height: 8px;
     }
     .bars::before,
     .bars::after {
       content: '';
       position: absolute;
       left: 0;
+      width: 100%;
+      height: 1.5px;
+      background: var(--text);
+      transition: transform 0.4s var(--ease);
     }
     .bars::before {
-      top: -6px;
+      top: 0;
     }
     .bars::after {
-      top: 6px;
-    }
-    .menu-toggle[aria-expanded='true'] .bars {
-      background: transparent;
+      bottom: 0;
     }
     .menu-toggle[aria-expanded='true'] .bars::before {
-      transform: translateY(6px) rotate(45deg);
+      transform: translateY(3.25px) rotate(45deg);
     }
     .menu-toggle[aria-expanded='true'] .bars::after {
-      transform: translateY(-6px) rotate(-45deg);
+      transform: translateY(-3.25px) rotate(-45deg);
     }
     .nav {
       position: fixed;
@@ -235,14 +261,14 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       gap: 2.5rem;
       padding: 3rem var(--pad);
       background: var(--bg);
-      transform: translateX(100%);
+      opacity: 0;
       visibility: hidden;
       transition:
-        transform 0.3s ease,
-        visibility 0.3s;
+        opacity 0.4s var(--ease),
+        visibility 0.4s;
     }
     .nav.open {
-      transform: none;
+      opacity: 1;
       visibility: visible;
     }
     .nav ul {
@@ -250,20 +276,15 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       gap: 1.5rem;
     }
     .nav ul a {
-      font-family: var(--font-nav);
-      font-size: clamp(1.25rem, 5.4vw, 1.55rem);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 1.1;
+      font-size: clamp(1.75rem, 7vw, 2.25rem);
+      letter-spacing: 0;
+      line-height: 1.15;
     }
-    .nav ul a[aria-current='page'] {
-      color: var(--accent-text);
-    }
-    .nav ul a[aria-current='page']::after {
-      display: none;
+    .nav ul a::after {
+      bottom: -4px;
     }
     .nav :global(.nav-cta) {
-      padding: 0.7rem 1.1rem;
+      padding: 0.9rem 1.5rem;
       font-size: 1rem;
     }
   }

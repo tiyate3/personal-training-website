@@ -6,16 +6,17 @@ interface Props {
   label?: string;
   variant?: 'primary' | 'ghost';
   class?: string;
+  icon?: boolean;
 }
-const { label = 'Book an intro session', variant = 'primary', class: className = '' } = Astro.props;
+const { label = 'Book an intro session', variant = 'primary', class: className = '', icon = true } = Astro.props;
 ---
 
 <a
-  class:list={['btn', `btn--${variant}`, className]}
+  class:list={['btn', `btn--${variant}`, 'btn--whatsapp', className]}
   href={WHATSAPP_URL}
   target="_blank"
   rel="noopener"
 >
-  <Icon name="whatsapp" />
+  {icon && <Icon name="whatsapp" />}
   <span>{label}</span>
 </a>
