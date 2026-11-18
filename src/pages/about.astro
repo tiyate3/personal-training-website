@@ -1,147 +1,422 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import CtaBand from '../components/CtaBand.astro';
-import FollowMe from '../components/FollowMe.astro';
-import { BASE_GYM, BRAND } from '../config';
+import Icon from '../components/Icon.astro';
+import { ABOUT_CLIPS, BASE_AREA, BRAND, SOCIALS } from '../config';
 
-/*
- * EXAMPLE CONTENT: replace with Mustafa's real story and qualifications before launch.
- * Everything on this page is written in his voice as a starting draft.
- */
-
-// TODO: replace with Mustafa's real qualifications.
-const qualifications = [
-  { title: 'Lorem ipsum dolor sit amet', detail: 'Lorem ipsum dolor sit amet' },
-  { title: 'Consectetur adipiscing elit', detail: 'Lorem ipsum dolor sit amet' },
-  { title: 'Sed do eiusmod tempor', detail: 'Lorem ipsum dolor sit amet' },
+const socials = [
+  { name: 'instagram' as const, label: 'Instagram', url: SOCIALS.instagram },
+  { name: 'tiktok' as const, label: 'TikTok', url: SOCIALS.tiktok },
 ];
 
+/* Example copy for Mustafa's story and training approach. */
+
 const principles = [
-  { title: 'Lorem ipsum dolor sit amet', text: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.' },
-  { title: 'Consectetur adipiscing elit', text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.' },
-  { title: 'Sed do eiusmod tempor', text: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
+  { title: 'Strong', text: 'Strength is the foundation. We build it properly with bodyweight and weights, so everything else gets easier.' },
+  { title: 'Lean', text: "Good training and realistic nutrition, not crash diets. You'll get leaner in a way you can actually keep up." },
+  { title: 'Mobile', text: 'Moving well matters as much as lifting heavy. We keep your joints healthy so you can train for years without niggles.' },
+  { title: 'Explosive', text: 'Speed, power and athleticism. Train to perform, not just to look the part.' },
+  { title: 'Consistent', text: "Small wins, week after week. Discipline beats motivation, and I'll help you build habits that last." },
 ];
 ---
 
 <Layout
-  title="About Mustafa | Personal Trainer in Central London"
-  description={`Meet Mustafa, the personal trainer behind ${BRAND}. Based at ${BASE_GYM} in central London. My story, training philosophy and what drives me.`}
+  title="Meet Mustafa | Personal Trainer in Central London"
+  description={`Meet Mustafa, the personal trainer behind ${BRAND}. Based in ${BASE_AREA}, central London. My story, training philosophy and what drives me.`}
 >
-  <section class="page-hero">
-    <div class="container">
-      <div class="hero-follow"><FollowMe /></div>
-      <h1>About <span class="accent">Mustafa</span></h1>
-      <p class="lead">
-        Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      </p>
-    </div>
-  </section>
-
-  <!-- History -->
-  <section class="section">
-    <div class="container grid-2">
-      <ImageSlot label="Portrait of Mustafa" ratio="4 / 5" />
-      <div>
-        <h2>My story</h2>
-        <!-- TODO: replace with Mustafa's real history -->
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-        <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+  <!-- Story: personal introduction beside a large portrait -->
+  <section class="section on-dark story-section">
+    <div class="container story">
+      <ImageSlot label="Portrait of Mustafa" src="/images/mustafa.webp" ratio="1 / 1.08" class="story-photo" />
+      <div class="story-text">
+        <h2 class="story-subheading" data-reveal>About me</h2>
+        <div>
+          <p class="first" data-reveal>I'm Mustafa, a personal trainer based in Marylebone, central London. I've been training calisthenics since 2019, I still play football and I run, so I train myself as an all-round athlete, not just to look good in the mirror.</p>
+          <p class="first" data-reveal>That's exactly how I coach. Most of my clients are busy professionals who want to feel strong, move well and have energy for everything else going on in their lives. I build every plan around you, your schedule and what you actually want to get out of it. That could be your first pull-up, getting back to sport after an injury or just finally feeling fit again.</p>
+          <h2 class="story-subheading" data-reveal>Why train with me:</h2>
+          <p class="first" data-reveal>I practise what I coach. Every skill and method I use, I've worked through myself, so I know what it takes and how to get you there safely.</p>
+          <p class="first" data-reveal>You get a plan that fits your life, not a generic template. I keep things honest, realistic and progressive, so you see real results and they stick.</p>
+          <p class="first" data-reveal>I actually care about how you're getting on, between sessions as well as in them.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Philosophy -->
-  <section class="section section--alt">
-    <div class="container">
-      <h2>How I train</h2>
-      <div class="principles">
+  <!-- Quote: one section split in half. Quote left, image filling the right half -->
+  <section class="split quote-section">
+    <div class="split-text quote-text">
+      <figure class="quote" data-reveal>
+        <blockquote>
+          <p>THE REAL PROGRESS STARTS IN THE KITCHEN,<br /><mark class="highlight">THE REST IS JUST A BONUS.</mark></p>
+        </blockquote>
+      </figure>
+    </div>
+    <div class="split-media">
+      <ImageSlot label="Mustafa: nutrition / kitchen photo" ratio="auto" reveal={false} />
+    </div>
+  </section>
+
+  <!-- Philosophy: one ruled row per principle -->
+  <section class="section on-dark">
+    <div class="container narrow">
+      <div class="section-head" data-reveal>
+        <h2>My training philosophy</h2>
+      </div>
+      <p class="philosophy-intro" data-reveal>Live like an athlete. You don't need to be a pro to train like one. It's about building a body that's strong, capable and ready for anything.</p>
+      <ol class="principles">
         {
-          principles.map((p) => (
-            <div class="principle">
+          principles.map((p, i) => (
+            <li data-reveal style={`--d: ${i}`}>
               <h3>{p.title}</h3>
               <p>{p.text}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- Qualifications -->
-  <section class="section section--alt">
-    <div class="container">
-      <h2>Qualifications</h2>
-      <ul class="quals">
-        {
-          qualifications.map((q) => (
-            <li>
-              <span class="tick" aria-hidden="true" />
-              <div>
-                <strong>{q.title}</strong>
-                <span>{q.detail}</span>
-              </div>
             </li>
           ))
         }
-      </ul>
+      </ol>
     </div>
   </section>
 
-  <CtaBand />
+  <!-- Follow my training: one section split in half. Montage filling the left half, text right -->
+  <section class="split split--flip follow-section">
+    <div class="split-media" data-clips aria-hidden="true">
+      {
+        ABOUT_CLIPS.map((clip, i) => (
+          <div class:list={['clip', { 'is-active': i === 0 }]}>
+            <ImageSlot label={clip.alt} type="video" src={clip.src} ratio="auto" reveal={false} />
+          </div>
+        ))
+      }
+    </div>
+    <div class="split-text follow-text">
+      <div class="follow-inner">
+        <h2 data-reveal>Follow my training</h2>
+        <ul class="socials">
+          {
+            socials.map((s) => (
+              <li>
+                {s.url ? (
+                  <a class="btn btn--ghost social-btn" href={s.url} target="_blank" rel="noopener">
+                    <Icon name={s.name} />
+                    {s.label}
+                    <span class="visually-hidden">(opens in new tab)</span>
+                  </a>
+                ) : (
+                  /* TODO: add the URL in src/config.ts (SOCIALS) to make this a link */
+                  <span class="btn btn--ghost social-btn is-soon">
+                    <Icon name={s.name} />
+                    {s.label}
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
 </Layout>
 
-<style>
-  .hero-follow {
-    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
-  }
-  .principles {
-    display: grid;
-    gap: 0 3rem;
-    margin-top: 2rem;
-  }
-  @media (min-width: 860px) {
-    .principles {
-      grid-template-columns: repeat(3, 1fr);
+<script>
+  // "Follow my training" montage: fade to the next clip every 6s (paused while the tab is hidden).
+  // Only the visible clip plays; with reduced motion nothing rotates or autoplays.
+  const clips = document.querySelector<HTMLElement>('[data-clips]');
+  if (clips) {
+    const frames = Array.from(clips.querySelectorAll<HTMLElement>('.clip'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let active = 0;
+
+    const sync = () => {
+      frames.forEach((frame, i) => {
+        const video = frame.querySelector('video');
+        if (!video) return;
+        if (i === active && !reduce) video.play().catch(() => {});
+        else video.pause();
+      });
+    };
+
+    const show = (next: number) => {
+      frames[active].classList.remove('is-active');
+      active = next;
+      frames[active].classList.add('is-active');
+      sync();
+    };
+
+    sync();
+    if (frames.length > 1 && !reduce) {
+      window.setInterval(() => {
+        if (!document.hidden) show((active + 1) % frames.length);
+      }, 6000);
     }
   }
-  .principle {
-    padding: 1.5rem 0 1rem;
-    border-top: 1px solid var(--line);
-  }
-  .quals {
-    list-style: none;
-    margin: 2rem 0 0;
-    padding: 0;
+</script>
+
+<style>
+
+  /* Story */
+  .story {
     display: grid;
-    column-gap: 3rem;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: center;
   }
-  @media (min-width: 760px) {
-    .quals {
+  .story :global(.story-photo) {
+    width: 85%;
+    max-width: none;
+    margin-inline: auto;
+  }
+  .story-section {
+    padding-top: calc(var(--header-h) + 0.9rem);
+  }
+  /* Simple left-aligned headings and readable copy, following the portrait-led layout */
+  .story-subheading {
+    margin: 0 0 0.8rem;
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+  .story-text > div p {
+    margin-bottom: 1rem;
+    font-size: clamp(0.92rem, 1.05vw, 1rem);
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .story-text > div p + .story-subheading {
+    margin-top: clamp(1.5rem, 2.5vw, 2rem);
+  }
+  .story-text > div p:last-child {
+    margin-bottom: 0;
+  }
+  @media (min-width: 700px) {
+    .story {
       grid-template-columns: 1fr 1fr;
     }
+    /* The photo sets the frame: it fills the row's full height, and the text sits inset
+       within it, starting below the photo's top and ending above its bottom */
+    .story {
+      align-items: stretch;
+    }
+    .story :global(.story-photo) {
+      grid-column: 1;
+      grid-row: 1;
+      aspect-ratio: auto !important;
+      height: 100%;
+      min-height: clamp(26rem, 42vw, 38rem);
+    }
+    .story :global(.story-photo img) {
+      object-position: center;
+    }
+    .story-text {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: center;
+      padding-block: clamp(2rem, 4vw, 3.5rem);
+    }
   }
-  .quals li {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    padding: 1.25rem 0;
+  @media (min-width: 961px) {
+    .story-section {
+      padding-top: 8.4rem;
+    }
+  }
+  @media (max-width: 699px) {
+    .story-section {
+      padding-top: calc(var(--header-h) + 0.9rem);
+    }
+  }
+
+  /* Principles */
+  /* One ruled row per principle */
+  .philosophy-intro {
+    max-width: 42rem;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+    color: var(--text);
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.5;
+  }
+  .principles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .principles li {
+    padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
     border-top: 1px solid var(--line);
+    color: var(--text);
   }
-  .quals strong {
-    display: block;
-    font-size: 1.05rem;
+  .principles h3 {
+    margin: 0 0 0.8rem;
+    color: var(--text);
   }
-  .quals span:not(.tick) {
-    font-size: 0.9rem;
+  .principles p {
+    margin: 0;
     color: var(--muted);
   }
-  .tick {
-    flex: none;
-    width: 0.9rem;
-    height: 2px;
-    margin-top: 0.8rem;
-    background: var(--accent);
+
+  /* Split sections: text in one half, media filling the other half edge to edge.
+     The text keeps the page's outer margin on its outside edge. */
+  .split {
+    --edge: max(var(--pad), calc((100vw - var(--max)) / 2 + var(--pad)));
+    display: grid;
   }
+  .split-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--section) var(--pad);
+  }
+  .split-media {
+    position: relative;
+    overflow: hidden;
+  }
+  .split-media :global(.slot) {
+    height: 100%;
+  }
+  @media (min-width: 860px) {
+    .split {
+      grid-template-columns: 1fr 1fr;
+      min-height: clamp(30rem, 80vh, 50rem);
+    }
+    /* The text hugs the middle, next to its image or video */
+    .split-text {
+      padding-left: var(--edge);
+      padding-right: clamp(1.5rem, 3vw, 3rem);
+    }
+    /* Quote sits tight against the image: right-aligned, with only a small gap */
+    .quote-text {
+      align-items: flex-end;
+      padding-right: clamp(1rem, 1.75vw, 1.5rem);
+    }
+    .quote blockquote p {
+      text-align: right;
+    }
+    .split--flip .split-text {
+      grid-column: 2;
+      grid-row: 1;
+      align-items: flex-start;
+      padding-left: clamp(1.5rem, 3vw, 3rem);
+      padding-right: var(--edge);
+    }
+    .split--flip .split-media {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+
+  /* Quote */
+  .quote {
+    margin: 0;
+  }
+  .quote blockquote {
+    margin: 0;
+  }
+  /* Marker-pen highlight in the site orange; the text stays black. Wraps cleanly across lines. */
+  .highlight {
+    padding: 0 0.12em;
+    background: var(--accent);
+    color: var(--black);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .quote blockquote p {
+    margin: 0;
+    max-width: 34rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-wrap: balance;
+  }
+  /* Phones: image below the quote at a fixed shape */
+  @media (max-width: 859px) {
+    .quote-section .split-media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* Follow my training */
+  .follow-section {
+    margin-bottom: -1px;
+  }
+  .follow-text h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    /* Lined up with the buttons under it (headings are centred site-wide) */
+    text-align: left;
+  }
+  /* Heading and buttons as one group, centred in the white half, lined up on the left */
+  .follow-inner {
+    text-align: left;
+  }
+  @media (min-width: 860px) {
+    .split--flip.follow-section .split-text {
+      align-items: center;
+    }
+  }
+  /* Which part of the montage stays in frame when it's cropped: 0% = top, 100% = bottom */
+  .follow-section .split-media :global(video) {
+    object-position: center 60%;
+  }
+  @media (max-width: 859px) {
+    .follow-section .split-media {
+      aspect-ratio: 4 / 5;
+      max-height: 75vh;
+      width: 100%;
+    }
+  }
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .social-btn {
+    padding: 0.75rem 1.2rem;
+    border-width: 1px;
+    border-radius: 0;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+  /* Black and white: solid black, inverting to white with a black outline on hover */
+  .social-btn {
+    border-color: var(--black);
+    background: var(--black);
+    color: #ffffff;
+  }
+  .social-btn:hover,
+  .social-btn:focus-visible {
+    transform: none;
+    border-color: var(--black);
+    background: #ffffff;
+    color: var(--black);
+  }
+  /* No URL yet: looks the same, but isn't interactive */
+  .social-btn.is-soon {
+    pointer-events: none;
+  }
+
+  /* Background clips: stacked full-bleed and cross-faded */
+  .clip {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.6s var(--ease);
+  }
+  .clip.is-active {
+    opacity: 1;
+  }
+  .clip :global(.slot) {
+    height: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .clip {
+      transition: none;
+    }
+  }
+
 </style>

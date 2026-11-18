@@ -1,8 +1,6 @@
 ---
 import { BRAND, NAV } from '../config';
-import WhatsAppButton from './WhatsAppButton.astro';
-import logo from '../assets/mustafatheathlete-logo.svg';
-import logoWhite from '../assets/mustafatheathlete-logo-white.svg';
+import logoWhite from '../assets/mustafatheathlete-nav-logo.svg';
 import { withBase } from '../utils/paths';
 
 // Current page path with the deploy base stripped, always in the form '/services/'
@@ -15,14 +13,14 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 ---
 
 <!--
-  Transparent with the white logo while it sits over the black hero at the top of every page;
-  turns solid white with the black logo once the page scrolls past the hero (or the menu opens).
+  One header row: logo on the left; the links, grouped, then the "Book a session" button on the right.
+  Black throughout; only over the top of the home hero is the backing see-through, so the video shows.
+  On small screens: logo + menu button, and the links open as a full-screen menu.
 -->
 <header class="header">
-  <div class="container bar">
+  <div class="bar">
     <a class="logo" href={withBase('/')} aria-label={`${BRAND} home`}>
-      <img class="logo-white" src={logoWhite.src} width="550" height="200" alt="" />
-      <img class="logo-black" src={logo.src} width="550" height="200" alt="" />
+      <img src={logoWhite.src} width="332" height="90" alt="" />
     </a>
 
     <nav class="nav" id="site-nav" aria-label="Main">
@@ -31,13 +29,15 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
           NAV.map((item) => (
             <li>
               <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
-                {item.href === '/services/' ? 'Training' : item.label}
+                {item.label}
               </a>
             </li>
           ))
         }
       </ul>
-      <WhatsAppButton class="nav-cta" variant="ghost" label="Book a session" icon={false} />
+      <a class="nav-cta" href={withBase('/book/')} aria-current={isActive('/book/') ? 'page' : undefined}>
+        Book a session
+      </a>
     </nav>
 
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
@@ -59,8 +59,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     document.body.style.overflow = open ? '' : 'hidden';
   });
 
-  // Clear over the top of the hero; once scrolled, the header takes on the colour of whatever
-  // section is passing underneath it: black over black sections, white over light ones.
+  // See-through over the top of the home hero; solid black everywhere else.
   const update = () => {
     if (!header) return;
     const scrolled = window.scrollY > 8;
@@ -68,13 +67,60 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     const under = document
       .elementsFromPoint(window.innerWidth / 2, y)
       .find((el) => !header.contains(el) && !el.closest('.fab'));
-    const dark = !!under?.closest('.on-dark, .page-hero');
-    header.classList.toggle('dark-solid', scrolled && dark);
-    header.classList.toggle('solid', scrolled && !dark);
+    const overHero = !scrolled && !!under?.closest('.hero');
+    header.classList.toggle('dark-solid', !overHero);
   };
   update();
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);
+
+  // Hide on scroll down, show on scroll up. Full size within the top 100px; anywhere below that it
+  // comes back as the compact 64px bar. The switch to compact happens while the header is out of
+  // view, so the only movement anyone sees is the slide.
+  if (header) {
+    const TOP = 100;
+    const WOBBLE = 6; // ignore smaller movements (phone bounce, a resting finger)
+    const SLIDE_MS = 250;
+    let lastY = Math.max(0, window.scrollY);
+    let compactTimer: number | undefined;
+
+    const show = () => header.classList.remove('is-hidden');
+    const hide = () => {
+      if (header.classList.contains('menu-open')) return;
+      header.classList.add('is-hidden');
+      window.clearTimeout(compactTimer);
+      compactTimer = window.setTimeout(() => {
+        if (header.classList.contains('is-hidden')) header.classList.add('compact');
+      }, SLIDE_MS);
+    };
+
+    // Loaded partway down the page (a refresh, or a link to a section): start compact
+    if (lastY > TOP) header.classList.add('compact');
+
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      if (y <= TOP) {
+        window.clearTimeout(compactTimer);
+        header.classList.remove('compact');
+        show();
+        lastY = y;
+        return;
+      }
+      const dy = y - lastY;
+      if (Math.abs(dy) < WOBBLE) return;
+      if (dy > 0) hide();
+      else {
+        // Below the top it always comes back compact, even after a quick flick down and up
+        header.classList.add('compact');
+        show();
+      }
+      lastY = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Tabbing into a hidden header brings it back
+    header.addEventListener('focusin', show);
+  }
 </script>
 
 <style>
@@ -82,19 +128,51 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
-    height: var(--header-h);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.25s;
-  }
-  /* Over the hero: dark tokens, so nav text and menu bars are white */
-  .header:not(.solid, .menu-open) {
+    /* Height of the bar: full at the top of the page, 64px once compact */
+    --bar-h: var(--header-h);
+    transition:
+      border-color 0.25s,
+      transform 0.25s var(--ease);
+    /* Dark tokens everywhere, so nav text, menu bars and the mobile menu are white on black */
+    --bg: var(--black);
     --text: #ffffff;
-    --muted: rgba(255, 255, 255, 0.72);
-    --line: rgba(255, 255, 255, 0.25);
+    --muted: rgba(255, 255, 255, 0.7);
+    --line: rgba(255, 255, 255, 0.2);
   }
-  .header.solid,
+  .header.dark-solid,
   .header.menu-open {
     border-bottom-color: var(--line);
+  }
+  /* Slid up out of view (a few px more than its height, so the bottom rule goes too) */
+  .header.is-hidden {
+    transform: translateY(calc(-100% - 2px));
+  }
+  /* Compact: 64px, logo at 60%, always solid black */
+  .header.compact {
+    --bar-h: 64px;
+  }
+  .header.compact::before {
+    opacity: 1;
+  }
+  .header.compact::after {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .header,
+    .bar,
+    .logo img {
+      transition: none !important;
+    }
+  }
+  /* Over the hero video: a soft dark fade behind the bar that dissolves to nothing */
+  .header:not(.dark-solid, .menu-open)::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 -70% 0;
+    z-index: -2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(11, 11, 11, 0.6) 0%, rgba(11, 11, 11, 0.3) 55%, rgba(11, 11, 11, 0) 100%);
   }
   /* Flat backing colour on a pseudo-element, so it can fade in without touching the fixed mobile menu */
   .header::before {
@@ -102,113 +180,132 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: #ffffff;
+    background: var(--black);
     opacity: 0;
     transition: opacity 0.25s;
   }
-  .header.solid::before,
+  .header.dark-solid::before,
   .header.menu-open::before {
     opacity: 1;
   }
-  .header.dark-solid::before {
-    opacity: 1;
-    background: var(--black);
-  }
+
+  /* ---------- The row ---------- */
   .bar {
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 2.25rem;
+    height: var(--bar-h);
+    padding: 0 48px;
+    transition: height 0.25s var(--ease);
   }
   .logo {
     display: block;
     flex: none;
-    /* The logo files carry generous padding, so the image is taller than the visible mark */
-    margin-left: -0.6rem;
   }
   .logo img {
-    height: 60px;
-    width: auto;
-  }
-  .logo-black,
-  .header.solid .logo-white,
-  .header.menu-open .logo-white {
-    display: none;
-  }
-  .header.solid .logo-black,
-  .header.menu-open .logo-black {
     display: block;
+    height: 40px;
+    width: auto;
+    transition: height 0.25s var(--ease);
   }
+  .header.compact .logo img {
+    height: 24px;
+  }
+
+  /* Links grouped together, then the button: plain text, 36px apart, no boxes or dividers */
   .nav {
     display: flex;
     align-items: center;
-    gap: 2.25rem;
+    gap: 36px;
   }
   .nav ul {
     display: flex;
-    gap: 2.25rem;
+    align-items: center;
+    gap: 36px;
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .nav ul a {
     position: relative;
+    display: inline-block;
+    padding-block: 0.35rem;
     font-family: var(--font-display);
-    font-size: 0.94rem;
-    font-weight: 400;
-    letter-spacing: 0.02em;
+    font-size: 0.88rem;
+    font-weight: 700;
+    /* All caps, spaced out a little so the capitals stay easy to read */
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
     color: var(--muted);
-    transition: color 0.3s var(--ease);
+    transition: color 0.2s;
   }
   .nav ul a:hover,
-  .nav ul a:focus-visible,
+  .nav ul a:focus-visible {
+    color: var(--text);
+  }
+  /* Current page: white, with a 2px orange underline */
   .nav ul a[aria-current='page'] {
     color: var(--text);
   }
-  /* Hairline underline: draws in from the left on hover, stays on the current page */
-  .nav ul a::after {
+  .nav ul a[aria-current='page']::after {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -6px;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.45s var(--ease);
+    bottom: -4px;
+    height: 2px;
+    background: #c2410c;
   }
-  .nav ul a:hover::after,
-  .nav ul a:focus-visible::after,
-  .nav ul a[aria-current='page']::after {
-    transform: scaleX(1);
-  }
-  .nav :global(.nav-cta) {
-    padding: 0.7rem 1.25rem;
-    border-width: 1px;
-    border-radius: 0;
+
+  /* Book a session: a thin white outlined button that fills white on hover */
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.25rem;
+    border: 1px solid #ffffff;
     font-family: var(--font-display);
     font-size: 0.88rem;
-    font-weight: 400;
-    letter-spacing: 0.04em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: #ffffff;
+    transition:
+      background 0.2s,
+      color 0.2s;
   }
-  .nav :global(.nav-cta:hover),
-  .nav :global(.nav-cta:focus-visible) {
-    transform: none;
-  }
-  /* Over dark backgrounds the button fills white on hover, so its label turns black */
-  .header:not(.solid, .menu-open) .nav :global(.nav-cta:hover),
-  .header:not(.solid, .menu-open) .nav :global(.nav-cta:focus-visible) {
+  .nav-cta:hover,
+  .nav-cta:focus-visible,
+  .nav-cta[aria-current='page'] {
+    background: #ffffff;
     color: var(--black);
   }
+
   .menu-toggle {
     display: none;
   }
 
+  /* ---------- Phones and small screens: logo + menu button, links in a full-screen menu ---------- */
   @media (max-width: 960px) {
+    .bar {
+      padding: 0 var(--pad);
+    }
+    .logo {
+      /* The logo file carries a little padding, so pull it to the page edge */
+      margin-left: -0.4rem;
+    }
+    .logo img {
+      height: 36px;
+    }
+    .header.compact .logo img {
+      height: 22px;
+    }
     .menu-toggle {
       display: grid;
       place-items: center;
@@ -249,18 +346,20 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     .menu-toggle[aria-expanded='true'] .bars::after {
       transform: translateY(-3.25px) rotate(-45deg);
     }
+
+    /* Full-screen menu: one ruled row per link, the button full width beneath */
     .nav {
       position: fixed;
-      top: var(--header-h);
+      top: var(--bar-h);
       left: 0;
       right: 0;
-      height: calc(100dvh - var(--header-h));
+      height: calc(100dvh - var(--bar-h));
       flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 2.5rem;
-      padding: 3rem var(--pad);
+      align-items: stretch;
+      gap: 2rem;
+      padding: 1.5rem var(--pad) 2rem;
       background: var(--bg);
+      overflow-y: auto;
       opacity: 0;
       visibility: hidden;
       transition:
@@ -273,18 +372,22 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     }
     .nav ul {
       flex-direction: column;
-      gap: 1.5rem;
+      align-items: stretch;
+      gap: 0;
+    }
+    .nav li {
+      border-bottom: 1px solid var(--line);
     }
     .nav ul a {
-      font-size: clamp(1.75rem, 7vw, 2.25rem);
-      letter-spacing: 0;
-      line-height: 1.15;
+      padding-block: 1.1rem;
+      font-size: clamp(1.2rem, 5vw, 1.5rem);
     }
-    .nav ul a::after {
-      bottom: -4px;
+    .nav ul a[aria-current='page']::after {
+      bottom: 0.75rem;
     }
-    .nav :global(.nav-cta) {
-      padding: 0.9rem 1.5rem;
+    .nav-cta {
+      justify-content: center;
+      padding: 1rem 1.25rem;
       font-size: 1rem;
     }
   }

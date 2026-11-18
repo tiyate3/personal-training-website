@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
 import { BRAND } from '../config';
 import icon from '../assets/mustafatheathlete-icon.svg';
 
@@ -37,6 +36,9 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     {canonical && <meta property="og:url" content={canonical} />}
 
     {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+    <!-- Lets CSS hide [data-reveal] content only when JS is there to reveal it again -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
     <a class="visually-hidden" href="#main">Skip to content</a>
@@ -45,6 +47,26 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
       <slot />
     </main>
     <Footer />
-    <FloatingWhatsApp />
+
+    <script>
+      // Keep scroll reveals limited to the home hero.
+      const items = document.querySelectorAll<HTMLElement>('.hero [data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -5% 0px', threshold: 0.08 },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-in'));
+      }
+    </script>
   </body>
 </html>

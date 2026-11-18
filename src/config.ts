@@ -4,13 +4,30 @@
 
 export const BRAND = 'Mustafa the Athlete';
 export const TRAINER = 'Mustafa';
-export const BASE_GYM = 'Fitness First Marylebone';
+/** The area Mustafa's gym sessions are in. The gym itself is never named on the site. */
+export const BASE_AREA = 'Marylebone';
 export const GYM_ADDRESS = 'Cavendish Mews N, London W1W 6LA';
+
+/** Nearest stations to the gym, with walking times. Times are approximate: check them in Google Maps. */
+export const STATIONS: { name: string; walk: string }[] = [
+  { name: 'Great Portland Street', walk: '5 min walk' },
+  { name: "Regent's Park", walk: '6 min walk' },
+  { name: 'Oxford Circus', walk: '8 min walk' },
+];
+
+/** Where enquiry form messages are delivered. */
+export const CONTACT_EMAIL = 'mustafatheathlete@gmail.com';
+/**
+ * Web3Forms access key for the home page enquiry form. Free: sign up at web3forms.com with
+ * CONTACT_EMAIL and paste the key here. Until it's set, "Send enquiry" opens the visitor's
+ * email app with the message filled in instead.
+ */
+export const WEB3FORMS_KEY = '';
 
 /** WhatsApp number in international format, digits only (no +, spaces or leading 0). */
 export const WHATSAPP_NUMBER = '447867871618';
 export const WHATSAPP_MESSAGE =
-  "Hi Mustafa, I found you on your website and I'd like to book an intro session.";
+  "Hi Mustafa, I found you on your website and I'd like to book a session.";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 /**
@@ -18,79 +35,70 @@ export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURICo
  * While a URL is empty, the icon still shows but is marked "coming soon".
  */
 export const SOCIALS = {
-  instagram: '', // e.g. 'https://www.instagram.com/mustafatheathlete'
-  tiktok: '', // e.g. 'https://www.tiktok.com/@mustafatheathlete'
+  instagram: 'https://www.instagram.com/mustafatheathlete/',
+  tiktok: 'https://www.tiktok.com/@mustafa__suarez',
 };
 
 export const NAV = [
+  { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
   { href: '/services/', label: 'Services' },
   { href: '/testimonials/', label: 'Results' },
-  { href: '/client-workouts/', label: 'Client workouts' },
 ];
 
 export const SERVICES = [
   {
     slug: 'strength-and-conditioning',
     name: 'Strength & conditioning',
-    short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+    short: 'Build practical strength, fitness and movement with bodyweight and weights.',
     body: [
-      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
-      'Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'Progressive sessions combine resistance work and conditioning around your ability and goals.',
+      'Build a stronger, more capable body for sport and everyday life.',
     ],
   },
   {
     slug: 'sport-specific',
     name: 'Sport-specific training',
-    short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    short: 'Build speed, power and fitness around the demands of your sport.',
     body: [
-      'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      'Training is shaped around your sport, your current level and what you want to improve.',
+      'Develop athletic movement and conditioning that carries over to training and competition.',
     ],
   },
   {
     slug: 'calisthenics',
     name: 'Calisthenics',
-    short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+    short: 'Develop bodyweight strength and skills, from the basics to your next milestone.',
     body: [
-      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
-      'Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'Build control and strength with clear progressions for skills such as your first pull-up.',
+      'Every step is matched to your ability, with technique and consistent practice at the centre.',
     ],
   },
   {
     slug: 'body-recomposition',
     name: 'Body recomposition',
-    short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    short: 'Build muscle and work towards a leaner physique with a realistic plan.',
     body: [
-      'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    ],
-  },
-  {
-    slug: 'weight-loss',
-    name: 'Weight loss',
-    short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    body: [
-      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
-      'Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'Progressive strength training and realistic nutrition habits support steady change without crash diets.',
+      'Your plan fits your schedule, making it easier to stay consistent over time.',
     ],
   },
   {
     slug: 'mobility-and-flexibility',
     name: 'Mobility & flexibility',
-    short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    short: 'Move with more control, comfort and confidence in your training.',
     body: [
-      'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      'Targeted mobility work helps you develop useful range and stronger positions.',
+      'Build movement habits that support your training and help keep you active for the long term.',
     ],
   },
   {
     slug: 'rehabilitation',
     name: 'Rehabilitation',
-    short: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+    short: 'Build confidence returning to exercise with training adapted to your needs.',
     body: [
-      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.',
-      'Curabitur pretium tincidunt lacus, nulla gravida orci a odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'Gradual strength and movement work is adjusted to your ability and progress.',
+      'Sessions can work alongside guidance from your healthcare professional as you return to training.',
     ],
   },
 ] as const;
@@ -100,6 +108,12 @@ export const SERVICES = [
  * e.g. { type: 'video', src: '/media/deadlift.mp4', alt: 'Mustafa deadlifting' }.
  * Items without a `src` show as empty placeholders.
  */
+// Background of the About page "Why I do it" section. One clip plays on a loop; add more and they cross-fade.
+// Files live in /public/media. Keep each under ~10 MB so phones can load it.
+export const ABOUT_CLIPS: { src?: string; alt: string }[] = [
+  { src: '/media/about_me_montage.mp4', alt: 'Montage of Mustafa training' },
+];
+
 export const HOME_MEDIA: { type: 'image' | 'video'; src?: string; alt: string }[] = [
   { type: 'video', alt: 'Mustafa training video 1' },
   { type: 'image', alt: 'Mustafa training photo 1' },

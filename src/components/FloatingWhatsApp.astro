@@ -5,7 +5,7 @@ import { WHATSAPP_URL } from '../config';
 
 <a class="fab" href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label="Message Mustafa on WhatsApp">
   <Icon name="whatsapp" />
-  <span class="tip" aria-hidden="true">Book an intro session</span>
+  <span class="tip" aria-hidden="true">Book a session</span>
 </a>
 
 <style>
@@ -19,13 +19,15 @@ import { WHATSAPP_URL } from '../config';
     width: 3.75rem;
     height: 3.75rem;
     border-radius: 50%;
-    background: #25d366;
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-    transition: transform 0.25s;
+    background: var(--accent);
+    color: var(--black);
+    border: 1px solid var(--black);
+    box-shadow: none;
+    transition: transform 0.25s, background 0.25s;
   }
   .fab:hover {
     transform: scale(1.06);
+    background: #d36b42;
   }
   .fab :global(svg) {
     width: 1.9rem;
@@ -41,8 +43,7 @@ import { WHATSAPP_URL } from '../config';
     color: #fff;
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.03em;
     opacity: 0;
     transform: translateX(6px);
     transition: 0.2s;

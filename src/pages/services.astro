@@ -1,72 +1,187 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { BASE_GYM, SERVICES } from '../config';
+import { BASE_AREA, SERVICES } from '../config';
+
+/* Three bands, alternating black and white. Only three services have a photo, so each band pairs
+   one of them (photo on the left) with a text-only service: the pair's two services stack on the right. */
+const PAIRS: [string, string][] = [
+  ['calisthenics', 'body-recomposition'],
+  ['strength-and-conditioning', 'sport-specific'],
+  ['mobility-and-flexibility', 'rehabilitation'],
+];
+const find = (slug: string) => SERVICES.find((s) => s.slug === slug);
+const bands = PAIRS.map((pair) => pair.map(find).filter((s) => s !== undefined));
+const imageRatios = ['3 / 4', '5 / 4', '3 / 4'];
+const COUNT_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
 ---
 
 <Layout
   title="Personal Training Services in Central London"
-  description={`Strength & conditioning, sport-specific training, calisthenics, body recomposition, weight loss, mobility and rehabilitation. One-to-one personal training at ${BASE_GYM} or at home anywhere in London.`}
+  description={`Strength & conditioning, sport-specific training, calisthenics, body recomposition, mobility and rehabilitation. One-to-one personal training in ${BASE_AREA} or private in-home training across central London.`}
 >
-  <section class="page-hero">
-    <div class="container">
-      <h1>Training <span class="accent">services</span></h1>
-    </div>
-  </section>
-
-  {
-    SERVICES.map((s, i) => (
-      <section id={s.slug} class:list={['section', 'service', { 'section--alt': i % 2 === 1 }]}>
-        <div class:list={['container', 'grid-2', { flip: i % 2 === 1 }]}>
-          <ImageSlot label={`${s.name} photo`} ratio="5 / 4" class="service-photo" />
-          <div>
-            <h2>{s.name}</h2>
-            <p class="lead">{s.short}</p>
-            {s.body.map((para) => <p>{para}</p>)}
-            <WhatsAppButton label="Ask about this" variant="ghost" />
+  <!-- Three bands, one photo each: photo on the left, then the pair of services, each with its
+       heading, one line and a sentence more -->
+  <div class="bands">
+    {
+      bands.map((pair, i) => (
+        <div class:list={['band', `band--${i + 1}`, { 'on-dark': i % 2 === 0 }]}>
+          <div class="band-media">
+            <ImageSlot label={`${pair[0].name} photo`} ratio={imageRatios[i]} />
+          </div>
+          <div class="band-text">
+            {pair.map((s) => (
+              <section id={s.slug} class="band-svc">
+                <h2 data-reveal>{s.name}</h2>
+                <p class="lead" data-reveal>{s.short}</p>
+                {s.body[0] && <p class="detail" data-reveal>{s.body[0]}</p>}
+              </section>
+            ))}
           </div>
         </div>
-      </section>
-    ))
-  }
+      ))
+    }
+  </div>
 
-  <section class="section where">
-    <div class="container grid-2">
-      <div>
-        <h2>Where I train clients</h2>
-      </div>
-      <div>
-        <p>
-          <strong>Gym sessions:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </p>
-        <p>
-          <strong>Home visits:</strong> Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-        <p>Message me for rates and availability.</p>
-      </div>
-    </div>
-  </section>
-
-  <CtaBand />
+  <CtaBand
+    title="Book a session"
+    text={`One-to-one coaching in ${BASE_AREA} or at home across central London. ${count} ways to train; most clients combine two or three. Pricing depends on your plan and how often you train.`}
+    tone="light"
+  />
 </Layout>
 
 <style>
-  .service .lead {
-    color: var(--text);
+  /* ---------- Bands: one per service ---------- */
+  .bands {
+    padding-top: 3.85rem;
   }
-  @media (max-width: 859px) {
-    .service :global(.service-photo) {
-      aspect-ratio: 16 / 9 !important;
+  @media (max-width: 760px) {
+    .bands {
+      padding-top: 3.325rem;
     }
   }
-  @media (min-width: 860px) {
-    .flip > :first-child {
-      order: 2;
+  .band {
+    display: grid;
+  }
+  .band-svc {
+    scroll-margin-top: var(--header-h);
+  }
+  /* The pair's two services, split by a hairline */
+  .band-svc + .band-svc {
+    margin-top: clamp(2.125rem, 3.825vw, 2.975rem);
+    padding-top: clamp(2.125rem, 3.825vw, 2.975rem);
+    border-top: 1px solid var(--line);
+  }
+  /* Phones: the photo runs edge to edge above the text */
+  .band-media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1.28 / 1;
+  }
+  .band--2 .band-media {
+    aspect-ratio: 1.2 / 1;
+  }
+  .band--3 .band-media {
+    aspect-ratio: 1.15 / 1;
+  }
+  .band-media :global(.slot) {
+    width: 82%;
+    height: auto;
+  }
+  .band--1 .band-media :global(.slot) {
+    width: 52.03125%;
+  }
+  .band--2 .band-media :global(.slot) {
+    width: 76.752%;
+  }
+  .band--3 .band-media :global(.slot) {
+    width: 52.03125%;
+  }
+  .band-text {
+    padding: clamp(3.15rem, 9.2vw, 4.3rem) clamp(2.5rem, 10vw, 4rem) clamp(3.15rem, 9.2vw, 4.3rem) clamp(2rem, 6vw, 3rem);
+  }
+  @media (min-width: 900px) {
+    /* The photo takes the left 45% of the screen from the edge, full band height; text the rest */
+    .band {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      min-height: clamp(27rem, 63vh, 39rem);
+      padding-inline: clamp(3rem, 7vw, 7rem);
+    }
+    .band--2 {
+      grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+      min-height: clamp(28rem, 66vh, 40rem);
+    }
+    .band--3 {
+      grid-template-columns: minmax(0, 0.97fr) minmax(0, 1.03fr);
+      min-height: clamp(26.5rem, 60vh, 38rem);
+    }
+    .band--1,
+    .band--3 {
+      padding-left: clamp(2rem, 4vw, 4rem);
+      padding-right: clamp(6rem, 12vw, 12rem);
+    }
+    /* The photo sits inset in its space, with the band's own colour around it */
+    .band-media {
+      aspect-ratio: auto;
+      padding-block: clamp(3.7rem, 7vw, 6.4rem);
+      padding-inline: 0;
+    }
+    .band-media :global(.slot) {
+      width: 90%;
+    }
+    .band--1 .band-media :global(.slot) {
+      width: 56.25%;
+    }
+    .band--2 .band-media :global(.slot) {
+      width: 84.24%;
+    }
+    .band--3 .band-media :global(.slot) {
+      width: 56.25%;
+    }
+    .band-media :global(.slot) {
+      justify-self: end;
+    }
+    .band--2 .band-media {
+      padding-block: clamp(3rem, 5.5vw, 5rem);
+    }
+    .band--3 .band-media {
+      padding-block: clamp(4rem, 7.5vw, 6.8rem);
+    }
+    /* In from the photo, and out to the site's 1100px column on the right. Padding percentages are
+       of this column (55% of the band), so half the band is 100% / 1.1. */
+    .band-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-self: center;
+      padding-block: 0.5rem;
+      padding-left: 1.5rem;
+      padding-right: 0;
+    }
+    .band--3 .band-text {
+      padding-block: clamp(3rem, 6vw, 4.5rem);
     }
   }
-  .where strong {
-    color: var(--text);
+
+  .band h2 {
+    margin-bottom: 0.85rem;
+    font-size: clamp(1.03rem, 1.6vw, 1.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-align: left;
+  }
+  /* Both lines of text under a service share one style */
+  .band .lead,
+  .band .detail {
+    max-width: 26rem;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .band .detail {
+    margin-top: 0;
   }
 </style>

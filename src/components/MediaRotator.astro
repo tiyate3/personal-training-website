@@ -7,7 +7,7 @@ import { HOME_MEDIA } from '../config';
   {
     HOME_MEDIA.map((m, i) => (
       <div class:list={['frame', { active: i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
-        <ImageSlot label={m.alt} type={m.type} src={m.src} ratio="auto" />
+        <ImageSlot label={m.alt} type={m.type} src={m.src} ratio="auto" reveal={false} />
       </div>
     ))
   }
@@ -47,7 +47,7 @@ import { HOME_MEDIA } from '../config';
     const start = () => {
       if (reduced) return;
       stop();
-      timer = window.setInterval(() => show(current + 1), 5000);
+      timer = window.setInterval(() => show(current + 1), 8000);
     };
     const stop = () => window.clearInterval(timer);
 
@@ -73,7 +73,7 @@ import { HOME_MEDIA } from '../config';
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 1.2s ease;
+    transition: opacity 2s var(--ease);
   }
   .frame.active {
     opacity: 1;
@@ -82,24 +82,28 @@ import { HOME_MEDIA } from '../config';
     height: 100%;
     border-radius: 0;
   }
+  /* Placeholder in the hero: plain black with the shot label tucked under the header, top right */
   .frame :global(.empty) {
-    align-items: center;
-    justify-content: center;
-    padding: calc(var(--header-h) + 1.25rem) var(--pad);
-    color: rgba(255, 255, 255, 0.82);
-    border-color: rgba(255, 255, 255, 0.38);
-    background: rgba(11, 12, 14, 0.48);
+    align-items: flex-end;
+    padding: calc(var(--header-h) + 1.5rem) var(--pad);
+    background: var(--black);
+  }
+  .frame :global(.empty .what) {
+    display: none;
+  }
+  .frame :global(.corner) {
+    display: none;
   }
   .dots {
     position: absolute;
-    left: max(var(--pad), calc((100% - var(--max)) / 2 + var(--pad)));
-    bottom: 1.75rem;
+    right: max(var(--pad), calc((100% - var(--max)) / 2 + var(--pad)));
+    top: calc(var(--header-h) + 3.5rem);
     display: flex;
     gap: 0.4rem;
     z-index: 3;
   }
   .dots button {
-    width: 1.5rem;
+    width: 2.25rem;
     height: 2px;
     padding: 0;
     border: 0;

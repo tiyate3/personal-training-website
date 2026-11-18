@@ -1,0 +1,269 @@
+﻿---
+interface Review {
+  quote: string;
+  author: string;
+}
+
+// Add verified Google reviews here. Until there are any, blank placeholder cards
+// (stars and grey bars, no invented text) hold the layout.
+const reviews: Review[] = [];
+const PLACEHOLDERS = 6;
+
+const slides: (Review | null)[] = reviews.length ? reviews : Array(PLACEHOLDERS).fill(null);
+---
+
+<section class="reviews-section" aria-labelledby="reviews-heading">
+  <div class="container narrow reviews-inner">
+    <h2 id="reviews-heading">Testimonials</h2>
+
+    <div class="reviews-stage" data-reviews>
+      {!reviews.length && <p class="visually-hidden">Client reviews coming soon.</p>}
+      <div class="reviews-slides">
+        {
+          slides.map((review, i) => (
+            <figure
+              class:list={['review', { 'is-active': i === 0, 'review--placeholder': !review }]}
+              aria-hidden={review && i === 0 ? undefined : 'true'}
+            >
+              <div class="stars" aria-hidden="true">★★★★★</div>
+              {review ? (
+                <>
+                  <blockquote>{review.quote}</blockquote>
+                  <figcaption>{review.author}</figcaption>
+                </>
+              ) : (
+                <>
+                  <div class="bars">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <span class="bar-name" />
+                </>
+              )}
+            </figure>
+          ))
+        }
+      </div>
+      {
+        slides.length > 1 && (
+          <div class="review-lines" role="group" aria-label="Choose a testimonial">
+            {slides.map((_, i) => (
+              <button
+                type="button"
+                class:list={['review-line', { 'is-active': i === 0 }]}
+                data-go={i}
+                aria-label={`Testimonial ${i + 1} of ${slides.length}`}
+                aria-current={i === 0 ? 'true' : undefined}
+              >
+                <span class="review-line-fill" />
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // Moves on every 7s. Each line under the testimonial is a button: click one to jump to it.
+  // The active line fills in orange as its time runs, so it's clear when it will move on.
+  // Clicking a line jumps to that review and starts its timer; on phones you can also swipe.
+  const stage = document.querySelector<HTMLElement>('[data-reviews]');
+  if (stage) {
+    const slides = Array.from(stage.querySelectorAll<HTMLElement>('.review'));
+    const lines = Array.from(stage.querySelectorAll<HTMLButtonElement>('.review-line'));
+    const real = !slides[0]?.classList.contains('review--placeholder');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DELAY = 7000;
+    stage.style.setProperty('--review-delay', `${DELAY}ms`);
+    let active = 0;
+    let timer: number | undefined;
+
+    const show = (next: number) => {
+      slides[active].classList.remove('is-active');
+      lines[active]?.classList.remove('is-active');
+      lines[active]?.removeAttribute('aria-current');
+      if (real) slides[active].setAttribute('aria-hidden', 'true');
+      active = (next + slides.length) % slides.length;
+      slides[active].classList.add('is-active');
+      // Restart the fill animation on the newly active line
+      const line = lines[active];
+      if (line) {
+        void line.offsetWidth;
+        line.classList.add('is-active');
+        line.setAttribute('aria-current', 'true');
+      }
+      if (real) slides[active].removeAttribute('aria-hidden');
+      restart();
+    };
+
+    function restart() {
+      window.clearTimeout(timer);
+      if (reduce) return;
+      timer = window.setTimeout(() => {
+        if (!document.hidden) show(active + 1);
+        else restart();
+      }, DELAY);
+    }
+
+    if (slides.length > 1) {
+      lines.forEach((line, i) => line.addEventListener('click', () => show(i)));
+
+      // Swipe left or right on the testimonial
+      const slidesBox = stage.querySelector<HTMLElement>('.reviews-slides');
+      let startX: number | null = null;
+      slidesBox?.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+      slidesBox?.addEventListener('touchend', (e) => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        startX = null;
+        if (Math.abs(dx) > 40) show(active + (dx < 0 ? 1 : -1));
+      });
+
+      restart();
+    }
+  }
+</script>
+
+<style>
+  /* Beige band, so it reads apart from the white sections either side; the card sits white on it */
+  .reviews-section {
+    padding-block: clamp(2rem, 4.5vw, 3.25rem);
+    background: var(--surface);
+  }
+  .reviews-inner {
+    display: grid;
+    gap: clamp(0.9rem, 1.8vw, 1.25rem);
+  }
+  .reviews-inner h2 {
+    margin: 0;
+  }
+
+  /* All reviews share one grid cell and cross-fade; the tallest sets the height */
+  .reviews-slides {
+    display: grid;
+  }
+  .review {
+    grid-area: 1 / 1;
+    margin: 0;
+    padding: clamp(1.1rem, 2.2vw, 1.6rem);
+    background: var(--bg);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.9s var(--ease),
+      visibility 0.9s;
+  }
+  .review.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .stars {
+    margin-bottom: 0.7rem;
+    color: #fbbc04;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    line-height: 1;
+  }
+  .review blockquote {
+    margin: 0;
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.5;
+  }
+  .review figcaption {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  /* Placeholder: grey bars where the review text and name will go */
+  .bars {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .bars span,
+  .bar-name {
+    display: block;
+    height: 0.85rem;
+    background: var(--surface-2);
+  }
+  .bars span:nth-child(1) {
+    width: 100%;
+  }
+  .bars span:nth-child(2) {
+    width: 92%;
+  }
+  .bars span:nth-child(3) {
+    width: 64%;
+  }
+  .bar-name {
+    width: 7rem;
+    margin-top: 1.4rem;
+  }
+
+  /* One thin line per testimonial, under the card. Each is a button; the active one fills
+     in orange over its time on screen. The buttons are taller than the lines, so they're easy to tap. */
+  .review-lines {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+  }
+  .review-line {
+    position: relative;
+    flex: 1;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .review-line::before,
+  .review-line-fill {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    margin-top: -1px;
+  }
+  .review-line::before {
+    background: var(--line);
+    transition: background 0.2s;
+  }
+  .review-line:hover::before,
+  .review-line:focus-visible::before {
+    background: var(--faint);
+  }
+  .review-line:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+  .review-line-fill {
+    display: block;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .review-line.is-active .review-line-fill {
+    animation: review-fill var(--review-delay, 7s) linear forwards;
+  }
+  @keyframes review-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .review {
+      transition: none;
+    }
+    /* Nothing moves on: the active line is simply solid orange */
+    .review-line.is-active .review-line-fill {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>

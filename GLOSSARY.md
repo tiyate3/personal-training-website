@@ -27,7 +27,7 @@ Training that takes place at Mustafa's Base Gym.
 _Avoid_: Studio session
 
 **Base Gym**:
-Fitness First Oxford Street, the gym Mustafa trains Clients from.
+Fitness First Marylebone, the gym Mustafa trains Clients from.
 _Avoid_: Home gym (confusable with Home Visit), studio, location
 
 **Home Visit**:

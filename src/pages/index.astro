@@ -1,29 +1,22 @@
 ﻿---
 import Layout from '../layouts/Layout.astro';
-import FollowMe from '../components/FollowMe.astro';
+import Icon from '../components/Icon.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import MediaRotator from '../components/MediaRotator.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import GoogleReviews from '../components/GoogleReviews.astro';
-import { BRAND, BASE_GYM, GYM_ADDRESS, SERVICES, SOCIALS, TRAINER, WHATSAPP_NUMBER, WHATSAPP_URL } from '../config';
+import { BRAND, BASE_AREA, GYM_ADDRESS, SERVICES, SOCIALS, STATIONS, TRAINER, WHATSAPP_NUMBER } from '../config';
 import { withBase } from '../utils/paths';
 
 const sameAs = Object.values(SOCIALS).filter(Boolean);
-const phoneDisplay = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(2, 6)} ${WHATSAPP_NUMBER.slice(6)}`;
-const gymMapUrl = `https://www.google.com/maps?q=${encodeURIComponent(`${BASE_GYM}, ${GYM_ADDRESS}`)}&output=embed`;
-const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${BASE_GYM}, ${GYM_ADDRESS}`)}`;
-const pound = '\u00a3';
-const pricingOptions: { duration: string; price: string; perHour?: string; bestValue?: boolean }[] = [
-  { duration: '[X] hour(s)', price: `${pound}[PRICE]` },
-  { duration: '[X] hours', price: `${pound}[PRICE]`, perHour: `${pound}[PRICE] per hour` },
-  { duration: '[X] hours', price: `${pound}[PRICE]`, perHour: `${pound}[PRICE] per hour` },
-  { duration: '[X] hours', price: `${pound}[PRICE]`, perHour: `${pound}[PRICE] per hour`, bestValue: true },
-];
+const addressParts = GYM_ADDRESS.match(/^(.*?)(?:\s+)([A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i);
+
+const gymMapUrl = `https://www.google.com/maps?q=${encodeURIComponent(GYM_ADDRESS)}&output=embed`;
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(GYM_ADDRESS)}`;
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'HealthAndBeautyBusiness',
   name: BRAND,
-  description: `Personal trainer in central London. Training at ${BASE_GYM} and home visits across London.`,
+  description: `Personal trainer in central London. Gym sessions in ${BASE_AREA} and private in-home personal training across central London.`,
   telephone: `+${WHATSAPP_NUMBER}`,
   address: {
     '@type': 'PostalAddress',
@@ -45,25 +38,26 @@ const schema = {
 
 <Layout
   title={`Personal Trainer Central London | ${BRAND}`}
-  description={`Personal trainer in central London at ${BASE_GYM}, with home visits anywhere in London. Strength & conditioning, calisthenics, weight loss, body recomposition, mobility and rehab. Book an intro session on WhatsApp.`}
+  description={`Personal trainer in central London, ${BASE_AREA} based, with private in-home personal training across central London. Strength & conditioning, calisthenics, body recomposition, mobility and rehab. Book a session on WhatsApp or by enquiry.`}
   schema={schema}
 >
-  <!-- Hero: full-bleed rotating media; headline set huge along the bottom -->
+  <!-- Hero: one looping clip behind the headline, set along the bottom -->
   <section class="hero on-dark">
-    <MediaRotator />
+    <div class="hero-media" aria-hidden="true">
+      <video src={withBase('/media/about_me_montage.mp4')} autoplay muted loop playsinline preload="auto"></video>
+    </div>
     <div class="hero-shade" aria-hidden="true"></div>
-    <div class="container hero-content">
+    <div class="container narrow hero-content">
+      <p class="hero-eyebrow" data-reveal style="--d: 0">
+        Personal training in central London
+      </p>
       <h1 class="hero-title">
-        <span class="line" data-reveal style="--d: 1">Personal trainer</span>
-        <span class="line accent" data-reveal style="--d: 2">in central London</span>
+        <span class="line" data-reveal style="--d: 1">Train like an</span>
+        <span class="line accent" data-reveal style="--d: 2"><em>athlete.</em></span>
       </h1>
 
       <div class="hero-foot" data-reveal style="--d: 3">
-        <p class="lead">
-          One-to-one sessions at {BASE_GYM} or in your own home. I train you the way I train
-          athletes, with a plan built around your goals.
-        </p>
-        <div class="hero-actions">
+        <div class="actions">
           <WhatsAppButton />
           <a class="btn btn--ghost" href={withBase('/services/')}>Services</a>
         </div>
@@ -71,143 +65,152 @@ const schema = {
     </div>
   </section>
 
-  <GoogleReviews />
-
-  <!-- Where I train clients: two columns side by side -->
-  <section class="section where-section">
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <h2>Where I train clients</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.</p>
-      </div>
-      <div class="where">
-        <article class="place">
-          <ImageSlot
-            label={`Training at ${BASE_GYM}`}
-            src="/media/fitness_first_video.mp4"
-            type="video"
-            ratio="3 / 2"
-          />
-          <div class="place-text" data-reveal>
-            <p class="eyebrow">Gym sessions</p>
-            <h3>{BASE_GYM}</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.</p>
-          </div>
-        </article>
-        <article class="place">
-          <ImageSlot label="A home visit session" ratio="3 / 2" delay={1} />
-          <div class="place-text" data-reveal style="--d: 1">
-            <p class="eyebrow">Home visits</p>
-            <h3>Anywhere in London</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="services-ticker-section" aria-label="Training services">
+  <!-- Services ticker: runs straight under the hero -->
+  <section class="services-ticker-section on-dark" aria-label="Training services">
     <p class="visually-hidden">
-      Strength &amp; conditioning, Sport-specific training, Calisthenics, Body recomposition, Weight loss, Mobility &amp; flexibility, Rehabilitation.
+      Strength &amp; conditioning, Sport-specific training, Calisthenics, Body recomposition, Mobility &amp; flexibility, Rehabilitation.
     </p>
-    <div class="ticker-strip">
+    <a class="ticker-strip" href={withBase('/services/')} aria-label="View all services">
       <div class="ticker-viewport">
         <div class="ticker-track">
           {[0, 1].map(() => (
             <div class="ticker-group" aria-hidden="true">
               {SERVICES.map((service) => (
-                <span class="ticker-item">{service.name}<span class="ticker-dot">·</span></span>
+                <span class="ticker-item">{service.name}<span class="ticker-dot" aria-hidden="true"></span></span>
               ))}
             </div>
           ))}
         </div>
       </div>
-    </div>
-    <div class="container ticker-link-wrap">
-      <a class="ticker-link" href={withBase('/services/')}>View all services</a>
+    </a>
+  </section>
+
+  <!-- Where I train clients: centred heading and line, a rule under, then the two places side by side -->
+  <section class="section where-section">
+    <div class="container">
+      <div class="where-head" data-reveal>
+        <h2>Where I train clients</h2>
+        <p>The gym in {BASE_AREA}, or your own home. Whichever fits your week.</p>
+      </div>
+      <div class="where">
+        <article class="place">
+          <div class="place-media">
+            <ImageSlot
+              label={`Training in ${BASE_AREA}`}
+              src="/media/gym-session.mp4"
+              type="video"
+              ratio="3 / 2"
+            />
+            <p class="place-bar">Gym sessions</p>
+          </div>
+          <div class="place-text" data-reveal>
+            <h3>{BASE_AREA} based</h3>
+            <p>One-to-one sessions in a fully kitted-out gym in central London. Rigs, bars, rings and free weights, everything we need.</p>
+          </div>
+        </article>
+        <article class="place">
+          <div class="place-media">
+            <ImageSlot label="A private in-home session" ratio="3 / 2" delay={1} />
+            <p class="place-bar">Across central London</p>
+          </div>
+          <div class="place-text" data-reveal style="--d: 1">
+            <h3>Private in-home personal training</h3>
+            <p>No time to get to the gym? I'll come to you. Hardly any kit needed, and you won't waste time commuting.</p>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
-  <!-- Pricing: free first session, then a plain price list -->
-  <section class="section on-dark sessions-section" id="pricing">
-    <div class="container sessions">
-      <div class="sessions-intro">
-        <h2>Pricing</h2>
-        <p class="sessions-free">Your first session is <span class="accent">free.</span></p>
-        <p>Meet me, talk through your goals and train together once before you commit to anything.</p>
-        <WhatsAppButton label="Book your free session" />
+  <GoogleReviews />
+
+  <!-- Booking: WhatsApp first, the email enquiry on its own /book/ page -->
+  <section class="section on-dark book-section" id="book">
+    <div class="container narrow book">
+      <div class="book-intro">
+        <h2>Book a session</h2>
+        <p>Tell me your goals and we’ll find a training plan that works for you.</p>
       </div>
-      <ul class="price-list">
-        {
-          pricingOptions.map((option) => (
-            <li>
-              <div class="price-what">
-                <h3>{option.duration}</h3>
-                {option.bestValue && <span class="price-tag">Best value</span>}
-              </div>
-              <div class="price-cost">
-                <p class="price-amount">{option.price}</p>
-                {option.perHour && <p class="price-rate">{option.perHour}</p>}
-              </div>
-            </li>
-          ))
-        }
-      </ul>
+      <!-- Buttons, then the email link under them: all centred -->
+      <div class="book-actions">
+        <div class="actions">
+          <WhatsAppButton label="Message me" />
+          <a class="btn btn--ghost" href={withBase('/services/')}>See what I offer</a>
+        </div>
+        <p class="email-prompt">Prefer email? <a class="email-link" href={withBase('/book/')}>Send an enquiry</a></p>
+      </div>
     </div>
   </section>
   <section class="section location-sections" aria-label="Location and contact">
-    <div class="container location-sections-inner">
-      <section class="location-block find-block" aria-labelledby="find-heading">
-        <h2 id="find-heading">Find me</h2>
-        <div class="find-grid">
+    <!-- Find me and Get in touch stacked on the left, the map on the right -->
+    <div class="container location-grid">
+      <div class="location-copy">
+        <section class="location-block find-block" aria-labelledby="find-heading">
+          <h2 id="find-heading">Find me</h2>
           <div class="address-panel">
-            <p class="gym-name">{BASE_GYM}</p>
-            <address>{GYM_ADDRESS}</address>
-            <p class="station-label">Closest stations</p>
-            <ul class="stations">
+            <address>
+              {addressParts ? <><span>{addressParts[1]}</span><span>{addressParts[2]}</span></> : GYM_ADDRESS}
+            </address>
+          </div>
+          <ul class="stations" aria-label="Nearest stations">
+            {
+              STATIONS.map((st) => (
+                <li>
+                  <span class="station-name">{st.name}</span>
+                  <span class="station-walk">{st.walk}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="btn btn--ghost location-action" href={directionsUrl} target="_blank" rel="noopener">Get directions</a>
+        </section>
+
+        <section class="location-block contact-block" aria-labelledby="contact-heading">
+          <h2 id="contact-heading">Get in touch</h2>
+          <div class="location-follow">
+            <ul>
               <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-1l2 3h-2l-2-3h-4l-2 3H6l2-3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H7Zm1 2h3v4H8V7Zm5 0h3v4h-3V7Z"/></svg>
-                <span>Great Portland Street Â· 5 min walk</span>
+                {SOCIALS.instagram ? (
+                  <a href={SOCIALS.instagram} target="_blank" rel="noopener"><span class="social-icon"><Icon name="instagram" /></span>Instagram</a>
+                ) : (
+                  <span><span class="social-icon"><Icon name="instagram" /></span>Instagram</span>
+                )}
               </li>
               <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-1l2 3h-2l-2-3h-4l-2 3H6l2-3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H7Zm1 2h3v4H8V7Zm5 0h3v4h-3V7Z"/></svg>
-                <span>Regent&#39;s Park Â· 5 min walk</span>
+                {SOCIALS.tiktok ? (
+                  <a href={SOCIALS.tiktok} target="_blank" rel="noopener"><span class="social-icon"><Icon name="tiktok" /></span>TikTok</a>
+                ) : (
+                  <span><span class="social-icon"><Icon name="tiktok" /></span>TikTok</span>
+                )}
               </li>
             </ul>
-            <a class="btn btn--primary directions-button" href={directionsUrl} target="_blank" rel="noopener">Get directions</a>
           </div>
-          <div class="map-frame">
-            <iframe
-              class="location-map"
-              src={gymMapUrl}
-              title={`Map showing ${BASE_GYM}`}
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen
-            ></iframe>
-            <span class="map-pin" aria-hidden="true"><span></span></span>
-          </div>
-        </div>
-      </section>
-
-      <section class="location-block contact-block" aria-labelledby="contact-heading">
-        <h2 id="contact-heading">Get in touch</h2>
-        <div class="contact-grid">
-          <div>
-            <h3>Message me on WhatsApp</h3>
-            <p class="contact-number">{phoneDisplay}</p>
-            <WhatsAppButton label="Message me on WhatsApp" />
-          </div>
-          <div class="location-follow">
-            <h3>Follow my training</h3>
-            <FollowMe showLabel={false} showArrows={false} />
-          </div>
-        </div>
-      </section>
+          <WhatsAppButton class="location-action" variant="ghost" label="Message me" icon={false} />
+        </section>
+      </div>
+      <div class="map-frame">
+        <iframe
+          class="location-map"
+          src={gymMapUrl}
+          title={`Map showing where I train in ${BASE_AREA}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
   </section>
 </Layout>
 
+<script>
+  // Hero clip: with reduced motion it stays on its first frame.
+  const heroVideo = document.querySelector<HTMLVideoElement>('.hero-media video');
+  if (heroVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.pause();
+  }
+
+</script>
 
 
 <style>
@@ -221,56 +224,113 @@ const schema = {
     padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
     overflow: hidden;
   }
-  /* Flat tint so the type stays readable over any photo */
+  /* One looping clip behind the headline, darkened so the white type stays readable */
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+  }
   .hero-shade {
     position: absolute;
     inset: 0;
     z-index: 1;
-    pointer-events: none;
-    background: rgba(11, 11, 11, 0.42);
+    background: linear-gradient(
+      to top,
+      rgba(11, 11, 11, 0.88) 0%,
+      rgba(11, 11, 11, 0.5) 55%,
+      rgba(11, 11, 11, 0.6) 100%
+    );
   }
   .hero-content {
     position: relative;
     z-index: 2;
+    text-align: left;
+  }
+  .hero :global(.btn--primary.btn--whatsapp) {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .hero :global(.btn--primary.btn--whatsapp:hover),
+  .hero :global(.btn--primary.btn--whatsapp:focus-visible) {
+    border-color: #d46a3b;
+    background: #d46a3b;
+    color: #fff;
+  }
+  .hero-eyebrow {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+    position: relative;
+    left: -0.75rem;
+    top: 3px;
   }
   .hero-title {
-    font-size: clamp(2.6rem, 7vw, 6.25rem);
-    line-height: 1.02;
+    font-size: clamp(2.1rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 0.94;
     margin: 0;
+    text-align: left;
   }
   .hero-title .line {
     display: block;
   }
+  .hero-title em {
+    font-style: italic;
+  }
   .hero-foot {
     display: grid;
-    gap: 1.75rem 4rem;
-    margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
-    padding-top: 1.75rem;
-    border-top: 1px solid var(--line);
+    justify-items: center;
+    gap: 1.75rem;
+    margin-top: clamp(1rem, 2vw, 1.5rem);
   }
   .hero-foot .lead {
     margin: 0;
   }
-  @media (min-width: 900px) {
-    .hero-foot {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-    }
-  }
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
   @media (max-width: 520px) {
-    .hero-actions :global(.btn) {
+    .hero-foot .actions :global(.btn) {
       flex: 1 1 100%;
     }
   }
 
   /* ---------- Where ---------- */
+  /* Sits close under the services ticker */
   .where-section {
-    padding-top: 0;
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+  /* Section opener, centred like a magazine section title: a larger heading, the line in a
+     narrow measure beneath it, and a full-width rule closing it off above the images */
+  .where-head {
+    display: grid;
+    justify-items: center;
+    gap: 0.85rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    padding-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  .where-head h2 {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .where-head p {
+    margin: 0;
+    max-width: 26rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--muted);
+    text-wrap: balance;
   }
   .where {
     display: grid;
@@ -282,34 +342,72 @@ const schema = {
       column-gap: clamp(1.5rem, 4vw, 4rem);
     }
   }
+  /* A long bar along the bottom of each image, carrying its label */
+  .place-media {
+    position: relative;
+  }
+  .place-bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 1;
+    margin: 0;
+    padding: 0.8rem clamp(1rem, 2vw, 1.4rem);
+    background: rgba(11, 11, 11, 0.72);
+    color: #ffffff;
+    font-family: var(--font-nav);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  /* Short left-aligned caption under each image, lined up with its left edge */
   .place-text {
-    margin-top: 1.25rem;
     max-width: 28rem;
+    margin-top: 1.5rem;
+    text-align: left;
   }
   .place-text h3 {
     margin-bottom: 0.9rem;
+    font-size: 1rem;
+  }
+  .place-text > p {
+    font-size: 1.02rem;
+    line-height: 1.5;
   }
   .place-text p:last-child {
     margin: 0;
   }
 
   /* ---------- Training ticker ---------- */
+  /* A solid pure-black band: no rules, white text */
   .services-ticker-section {
-    padding-bottom: 0.4rem;
+    padding-bottom: 0;
+    background: #000000;
   }
   .ticker-strip {
+    display: block;
     width: 100%;
     overflow: hidden;
-    border-block: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .ticker-strip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
   .ticker-viewport {
     overflow: hidden;
     padding-block: clamp(0.9rem, 2vw, 1.4rem);
   }
+  /* translate3d + will-change keep the scroll on the GPU, so it glides instead of stepping */
   .ticker-track {
     display: flex;
     width: max-content;
-    animation: services-marquee 40s linear infinite;
+    animation: services-marquee 45s linear infinite;
+    will-change: transform;
+    backface-visibility: hidden;
   }
   .ticker-group {
     display: flex;
@@ -324,37 +422,29 @@ const schema = {
     align-items: center;
     gap: clamp(1.1rem, 2.3vw, 2.25rem);
     font-family: var(--font-display);
-    font-size: clamp(1.45rem, 3vw, 2.5rem);
+    font-size: clamp(0.9rem, 1.35vw, 1.15rem);
     font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     line-height: 1.15;
   }
   .ticker-dot {
-    color: var(--accent);
+    display: inline-block;
+    width: 1px;
+    height: 1em;
+    background: var(--accent);
   }
   .ticker-strip:hover .ticker-track,
   .ticker-strip:focus-within .ticker-track {
     animation-play-state: paused;
   }
-  .ticker-link-wrap {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 0.55rem;
-  }
-  .ticker-link {
-    color: var(--muted);
-    font-size: 0.82rem;
-    text-decoration: none;
-    text-underline-offset: 0.25em;
-    transition: color 0.2s ease;
-  }
-  .ticker-link:hover,
-  .ticker-link:focus-visible {
-    color: var(--text);
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-  }
   @keyframes services-marquee {
-    to { transform: translateX(-50%); }
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .ticker-track {
@@ -376,248 +466,205 @@ const schema = {
     }
   }
 
-  /* ---------- Pricing ---------- */
-  .sessions {
+  /* ---------- Booking ---------- */
+  .book {
     display: grid;
-    gap: 2.5rem 4rem;
+    gap: clamp(1.75rem, 3.5vw, 2.5rem);
   }
-  @media (min-width: 900px) {
-    .sessions {
-      grid-template-columns: 5fr 7fr;
-      align-items: start;
-    }
+  .book-intro {
+    text-align: center;
   }
-  .sessions-intro h2 {
+  .book-intro h2 {
     margin-bottom: 1.5rem;
   }
-  .sessions-free {
-    margin-bottom: 1rem;
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
-    line-height: 1.15;
-    color: var(--text);
+  .book-intro p {
+    max-width: 30rem;
+    margin: 0 auto;
+    font-size: 1.08rem;
   }
-  .sessions-intro p:not(.sessions-free) {
-    max-width: 26rem;
-    margin-bottom: 1.75rem;
-  }
-  .price-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--line);
-  }
-  .price-list li {
+  /* The link sits centred under the buttons, its underline only as wide as its text */
+  .book-actions {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 2rem;
-    position: relative;
-    padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .book-actions .email-prompt {
+    margin-top: 1.75rem;
+  }
+  .book-section :global(.actions .btn) {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #ffffff;
+  }
+  .book-section :global(.actions .btn:hover),
+  .book-section :global(.actions .btn:focus-visible) {
+    border-color: #d46a3b;
+    background: #d46a3b;
+    color: #ffffff;
+  }
+  .book-section :global(.actions .btn:nth-child(2)) {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: var(--black);
+  }
+  .book-section :global(.actions .btn:nth-child(2):hover),
+  .book-section :global(.actions .btn:nth-child(2):focus-visible) {
+    border-color: #e8e8e8;
+    background: #e8e8e8;
+    color: var(--black);
+  }
+  /* ---------- Find me and get in touch ---------- */
+  /* White, between the black booking band and the black footer */
+  .location-sections {
+    background: var(--bg);
+  }
+  /* Info stacked on the left, the map filling the right and matching the column's height */
+  .location-grid {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+  @media (min-width: 860px) {
+    .location-grid {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      column-gap: clamp(2rem, 3.5vw, 3rem);
+      align-items: stretch;
+    }
+    /* Push the info to the right of its column so it sits up against the map */
+    .location-copy {
+      justify-self: end;
+      width: min(100%, 22rem);
+    }
+  }
+  .location-copy {
+    display: grid;
+    align-content: center;
+  }
+  .location-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .find-block {
+    padding-bottom: clamp(1.75rem, 3vw, 2.25rem);
     border-bottom: 1px solid var(--line);
   }
-  /* Hover (mouse only): the row under the pointer stays bright, the rest fall back,
-     and an orange hairline draws across beneath it */
-  @media (hover: hover) {
-    .price-list li {
-      transition: opacity 0.45s var(--ease);
-    }
-    .price-list:hover li:not(:hover) {
-      opacity: 0.4;
-    }
-    .price-list li::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -1px;
-      height: 1px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.7s var(--ease);
-    }
-    .price-list li:hover::after {
-      transform: scaleX(1);
-    }
-    .price-what h3 {
-      transition: transform 0.45s var(--ease);
-    }
-    .price-list li:hover .price-what h3 {
-      transform: translateX(0.5rem);
-    }
-  }
-  .price-what {
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-  }
-  .price-what h3 {
-    margin: 0;
-    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
-  }
-  .price-tag {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--accent-text);
-  }
-  .price-cost {
-    text-align: right;
-  }
-  .price-amount {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(1.6rem, 3vw, 2.25rem);
-    line-height: 1;
-    color: var(--text);
-  }
-  .price-rate {
-    margin: 0.4rem 0 0;
-    font-size: 0.8rem;
-    color: var(--faint);
-  }
-
-  /* ---------- Find me and get in touch ---------- */
-  .location-sections {
-    padding-block: clamp(2rem, 5vw, 4.5rem);
-    background: var(--surface);
-  }
-  .location-sections-inner {
-    display: grid;
-    gap: clamp(2.5rem, 6vw, 5rem);
+  .contact-block {
+    padding-top: clamp(1.75rem, 3vw, 2.25rem);
   }
   .location-block > h2 {
-    margin: 0 0 clamp(1.25rem, 2.5vw, 2rem);
-    font-size: clamp(1.7rem, 3vw, 2.4rem);
-  }
-  .find-grid,
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: stretch;
-  }
-  .gym-name {
-    margin: 0 0 0.3rem;
-    color: var(--text);
-    font-weight: 700;
+    margin: 0 0 1rem;
+    font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+    line-height: 1.1;
+    text-align: left;
   }
   .address-panel address {
     font-style: normal;
     color: var(--muted);
-    font-weight: 400;
+    line-height: 1.25;
   }
-  .station-label {
-    margin: 1.3rem 0 0.45rem;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--text);
+  .address-panel address span {
+    display: block;
   }
+  /* Nearest stations: ruled rows, name left, walk time right */
   .stations {
-    display: grid;
-    gap: 0.55rem;
+    align-self: stretch;
     list-style: none;
-    margin: 0;
+    margin: 1.1rem 0 0;
     padding: 0;
-    color: var(--muted);
-    line-height: 1.45;
+    border-bottom: 1px solid var(--line);
   }
   .stations li {
     display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.92rem;
+  }
+  .station-name {
+    color: var(--text);
+  }
+  .station-walk {
+    flex: none;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .location-copy :global(.location-action) {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 2.3rem;
+    margin-top: 1.25rem;
+    padding: 0.5rem 0.9rem;
+    border-width: 1px;
+    border-radius: 0;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+  }
+  .location-follow ul {
+    display: grid;
+    gap: 0.45rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .location-follow li > a,
+  .location-follow li > span {
+    display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.65rem;
+    color: var(--text);
+    font-size: 0.95rem;
   }
-  .stations svg {
-    flex: 0 0 1rem;
-    width: 1rem;
-    height: 1rem;
-    fill: var(--accent);
+  .location-follow a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 0.2s ease;
   }
-  .directions-button {
-    margin-top: 1.5rem;
+  .location-follow a:hover,
+  .location-follow a:focus-visible {
+    text-decoration-color: var(--accent);
   }
+  .social-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--muted);
+  }
+  .location-follow :global(.social-icon svg) {
+    width: 100%;
+    height: 100%;
+  }
+  /* The map, in full colour, with softly rounded corners */
   .map-frame {
     position: relative;
     overflow: hidden;
-    width: 100%;
-    aspect-ratio: 1.84;
-    min-height: 17rem;
-    border-radius: 0.75rem;
+    min-height: 26rem;
+    border-radius: 12px;
     background: var(--surface-2);
+    box-shadow: 0 0 0 1px var(--line);
   }
+  /* Google's embed always shows a place card in the top-left corner. The map is drawn taller than
+     the frame and shifted up so that card sits outside the visible area; the bottom edge, with
+     Google's required credit, stays in view. */
   .location-map {
+    position: absolute;
+    top: -130px;
+    left: 0;
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 130px);
     border: 0;
   }
-  .map-pin {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1.55rem;
-    height: 1.55rem;
-    transform: translate(-50%, -100%) rotate(-45deg);
-    border-radius: 50% 50% 50% 0;
-    background: var(--accent);
-    box-shadow: 0 2px 8px rgb(0 0 0 / 28%);
-    pointer-events: none;
-  }
-  .map-pin span {
-    position: absolute;
-    top: 0.42rem;
-    left: 0.42rem;
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: white;
-  }
-  .contact-grid > div > h3 {
-    margin: 0 0 0.55rem;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-  }
-  .contact-number {
-    margin: 0 0 1.1rem;
-    color: var(--muted);
-  }
-  .location-follow :global(.follow) {
-    display: block;
-    font-size: 1rem;
-    letter-spacing: 0;
-  }
-  .location-follow :global(.follow ul) {
-    gap: 1.5rem;
-    margin-top: 0.75rem;
-  }
-  .location-follow :global(.follow a),
-  .location-follow :global(.follow .soon) {
-    color: var(--text);
-    font-size: 1rem;
-  }
-  .location-follow :global(.follow a) {
-    text-decoration: none;
-  }
-  .location-follow :global(.follow a:hover),
-  .location-follow :global(.follow a:focus-visible) {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 0.25em;
-  }
-  @media (max-width: 700px) {
-    .find-grid,
-    .contact-grid {
-      grid-template-columns: 1fr;
-      gap: 1.75rem;
-      align-items: start;
-    }
+  @media (max-width: 859px) {
     .map-frame {
-      aspect-ratio: 1.84;
-      min-height: 13rem;
+      min-height: 18rem;
     }
   }
-
 </style>

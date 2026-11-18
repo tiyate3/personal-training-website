@@ -1,12 +1,29 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import CtaBand from '../components/CtaBand.astro';
+import { withBase } from '../utils/paths';
+
+/*
+ * Inside the sessions: one upright (9:16) video per service, in the Training page order.
+ * Put files in /public/media and set `src` (the video) and `poster` (a still from it), e.g.
+ * { service: 'Calisthenics', src: '/media/cali-session.mp4', poster: '/media/cali-session.jpg' }.
+ * Only post clients who have agreed to appear on the website.
+ */
+const sessionVideos: { service: string; src?: string; poster?: string }[] = [
+  { service: 'Calisthenics' },
+  { service: 'Body recomposition' },
+  { service: 'Strength & conditioning' },
+  { service: 'Sport-specific training' },
+  { service: 'Mobility & flexibility' },
+  { service: 'Rehabilitation' },
+];
 
 /*
  * EXAMPLE CONTENT: replace with real client testimonials.
  * Only publish a Transformation (before/after photos) once the client has given written consent.
  * Set `before`/`after` to image paths in /public/media once available.
+ * `result` is the headline (e.g. 'First muscle-up in 10 weeks'); keep `quote` to about 35 words (2-3 lines).
  */
 const transformations: {
   name: string;
@@ -18,17 +35,17 @@ const transformations: {
 }[] = [
   {
     name: 'Client name',
-    service: 'Weight Loss',
+    service: 'Body Recomposition',
     quote:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-    result: 'Example result',
+      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Ut enim ad minim veniam, quis nostrud.',
+    result: 'Example result in 12 weeks',
   },
   {
     name: 'Client name',
     service: 'Body Recomposition',
     quote:
-      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-    result: 'Example result',
+      'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Ut enim ad minim veniam.',
+    result: 'Example result in 10 weeks',
   },
 ];
 
@@ -52,37 +69,38 @@ const quotes = [
 ---
 
 <Layout
-  title="Client Testimonials & Transformations"
+  title="Client Results & Transformations"
   description="Testimonials and before-and-after transformations from clients I've trained in central London."
 >
-  <section class="page-hero">
-    <div class="container">
-      <h1>Client <span class="accent">testimonials</span></h1>
-      <p class="lead">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-  </section>
+  <PageHead
+    title="Client results"
+    variant="dark"
+    intro="Real people, real progress. From busy professionals getting fit again to clients hitting their first muscle-up, here's what consistent training looks like."
+  />
 
+  <!-- Transformations: text on the left (the result, their words, their name), before/after on the right.
+       A thin line above each, like the quotes -->
   <section class="section">
-    <div class="container stack">
+    <div class="container">
       {
         transformations.map((t) => (
           <article class="transformation">
-            <div class="photos">
-              <div>
-                <ImageSlot label="Before" src={t.before} ratio="3 / 4" />
-                <span class="tag">Before</span>
-              </div>
-              <div>
-                <ImageSlot label="After" src={t.after} ratio="3 / 4" />
-                <span class="tag tag--after">After</span>
-              </div>
+            <div class="t-head">
+              <p class="t-result" data-reveal>{t.result}</p>
             </div>
-            <div class="story">
-              <p class="result">{t.result}</p>
-              <blockquote>“{t.quote}”</blockquote>
-              <p class="who">
-                <strong>{t.name}</strong> · {t.service}
-              </p>
+            <div class="photos">
+              <figure>
+                <ImageSlot label={`${t.name}, before`} src={t.before} ratio="3 / 4" />
+                <figcaption>Before</figcaption>
+              </figure>
+              <figure>
+                <ImageSlot label={`${t.name}, after`} src={t.after} ratio="3 / 4" delay={1} />
+                <figcaption class="after">After</figcaption>
+              </figure>
+            </div>
+            <div class="t-words" data-reveal style="--d: 1">
+              <blockquote class="t-quote">“{t.quote}”</blockquote>
+              <p class="t-who">{t.name}</p>
             </div>
           </article>
         ))
@@ -90,104 +108,419 @@ const quotes = [
     </div>
   </section>
 
-  <section class="section section--alt">
+  <!-- Short Testimonials: the page's only black band, three quotes in a row -->
+  <section class="section on-dark quotes-section">
     <div class="container">
-      <h2>What clients say</h2>
-      <div class="quotes">
+      <div class="section-head" data-reveal>
+        <h2 class="quotes-heading">More from the people I train</h2>
+      </div>
+      <ul class="quotes">
         {
-          quotes.map((q) => (
-            <figure class="quote">
-              <blockquote>{q.quote}</blockquote>
-              <figcaption>
-                <strong>{q.name}</strong> · {q.service}
-              </figcaption>
-            </figure>
+          quotes.map((q, i) => (
+            <li data-reveal style={`--d: ${i}`}>
+              <blockquote>“{q.quote}”</blockquote>
+              <p>
+                <strong>{q.name}</strong>
+              </p>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
   </section>
 
-  <CtaBand />
+  <!-- Inside the sessions: a strip of large 4:3 videos running the full width of the screen with no
+       gaps, slowly drifting sideways on a loop (2 across on desktop, the next one peeking in on
+       phones). On desktop the heading sits over the top of it on a soft dark gradient;
+       on phones they sit above it. -->
+  <section class="section on-dark sessions-section" aria-labelledby="sessions-heading">
+    <div class="sessions-stage">
+    <div class="container sessions-overlay">
+      <div class="sessions-top">
+        <div class="sessions-head">
+          <h2 id="sessions-heading">Inside the sessions</h2>
+          <p>A look at how my clients train: strength, skills, conditioning and plenty of hard work, all built around their goals.</p>
+        </div>
+      </div>
+    </div>
+    <ul class="strip" data-strip>
+      {
+        /* The set is drawn twice so the drift can loop without a jump; the copy is hidden from screen readers */
+        [0, 1].map((copy) =>
+          sessionVideos.map((v) => (
+            <li class="strip-item" aria-hidden={copy === 1 ? 'true' : undefined}>
+              <div class="strip-media">
+                {v.src ? (
+                  <video
+                    src={withBase(v.src)}
+                    poster={v.poster ? withBase(v.poster) : undefined}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    aria-label={`${v.service} session`}
+                  />
+                ) : (
+                  <ImageSlot label={`${v.service} session video`} type="video" ratio="4 / 3" reveal={false} />
+                )}
+              </div>
+            </li>
+          ))
+        )
+      }
+    </ul>
+    <a class="btn sessions-cta" href={withBase('/book/')}>Ready to start?</a>
+    </div>
+  </section>
 </Layout>
 
-<style>
-  .stack {
-    display: grid;
-    gap: clamp(4rem, 10vw, 7rem);
-  }
-  .transformation {
-    display: grid;
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .transformation {
-      grid-template-columns: 1.1fr 0.9fr;
+<script>
+  // Inside the sessions strip: drifts slowly sideways on a loop (the set is drawn twice, so when the
+  // first copy has scrolled past it jumps back by one set, invisibly). Hovering, touching or using
+  // touching or scrolling pauses the drift; it picks up again a few seconds later. Videos play only on screen.
+  const strip = document.querySelector<HTMLElement>('[data-strip]');
+  if (strip) {
+    const items = Array.from(strip.querySelectorAll<HTMLElement>('.strip-item'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SPEED = 28; // pixels per second
+    const RESUME_AFTER = 3000;
+
+    const setWidth = () => {
+      const half = items[items.length / 2];
+      return half ? half.offsetLeft - items[0].offsetLeft : strip.scrollWidth / 2;
+    };
+    let pos = 0;
+    let lastSet = 0;
+    let last = performance.now();
+    let hover = false;
+    let holdUntil = 0;
+    const hold = () => (holdUntil = performance.now() + RESUME_AFTER);
+
+    const wrap = (value: number) => {
+      const w = setWidth();
+      return w > 0 ? ((value % w) + w) % w : value;
+    };
+
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 100) / 1000;
+      last = now;
+      // If someone scrolled it by hand, carry on from where they left it
+      if (Math.abs(strip.scrollLeft - lastSet) > 2) pos = strip.scrollLeft;
+      if (!hover && now > holdUntil && !document.hidden) {
+        pos = wrap(pos + SPEED * dt);
+        strip.scrollLeft = pos;
+      } else if (strip.scrollLeft >= setWidth()) {
+        pos = wrap(strip.scrollLeft);
+        strip.scrollLeft = pos;
+      }
+      lastSet = strip.scrollLeft;
+      requestAnimationFrame(tick);
+    };
+
+    strip.addEventListener('mouseenter', () => (hover = true));
+    strip.addEventListener('mouseleave', () => (hover = false));
+    strip.addEventListener('touchstart', hold, { passive: true });
+    strip.addEventListener('touchmove', hold, { passive: true });
+    strip.addEventListener('wheel', hold, { passive: true });
+
+    if (!reduce) requestAnimationFrame(tick);
+
+    // With reduced motion nothing autoplays: the poster shows, and a tap plays it with controls
+    const videos = Array.from(strip.querySelectorAll<HTMLVideoElement>('video'));
+    if (reduce) {
+      videos.forEach((v) => (v.controls = true));
+    } else if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const v = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) {
+              v.preload = 'auto';
+              v.play().catch(() => {});
+            } else {
+              v.pause();
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      videos.forEach((v) => io.observe(v));
     }
   }
+</script>
+
+<style>
+  /* A lighter weight than the other headings */
+  .quotes-heading {
+    font-weight: 400;
+  }
+  /* ---------- Transformations ---------- */
+  /* Phones: who and result, the photos, then the quote */
+  .transformation {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2rem);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+  /* A thin line above each case study, as above each quote (not the first: the black band closes it) */
+  .transformation + .transformation {
+    border-top: 1px solid rgba(17, 17, 17, 0.7);
+  }
+  /* Room under the page intro before the first result */
+  .transformation:first-child {
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .transformation:last-child {
+    padding-bottom: 0;
+  }
+  /* Desktop: text on the left (45%), the photos on the right (55%) */
+  @media (min-width: 860px) {
+    .transformation {
+      grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+      grid-template-areas:
+        'head photos'
+        'quote photos';
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(2.5rem, 5vw, 4.5rem);
+      row-gap: 1.5rem;
+      align-items: start;
+    }
+    .t-head {
+      grid-area: head;
+      padding-top: clamp(2rem, 6vw, 5rem);
+    }
+    .photos {
+      grid-area: photos;
+    }
+    .t-words {
+      grid-area: quote;
+    }
+  }
+  /* The client's name under their words, in small spaced capitals like the quotes */
+  .t-who {
+    margin: 1.25rem 0 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .t-result {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-wrap: balance;
+  }
+  /* Kept to a measure where ~35 words runs 2-3 lines */
+  .t-quote {
+    max-width: 30rem;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  /* Before and after side by side, the same height, labelled underneath */
   .photos {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    gap: clamp(0.5rem, 1.5vw, 1rem);
   }
-  .photos > div {
-    position: relative;
+  .photos figure {
+    margin: 0;
   }
-  .tag {
-    position: absolute;
-    top: 0.9rem;
-    left: 0.9rem;
-    padding: 0.3rem 0.7rem;
-    border-radius: var(--radius);
-    background: rgba(5, 5, 6, 0.85);
-    color: #fff;
+  .photos figcaption {
+    margin-top: 0.7rem;
     font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--faint);
   }
-  .tag--after {
-    background: var(--accent);
-  }
-  .result {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: clamp(2rem, 4vw, 3rem);
-    text-transform: uppercase;
-    line-height: 1;
-    color: var(--accent);
-  }
-  blockquote {
-    margin: 0 0 1.5rem;
-    font-size: 1.15rem;
+  .photos .after {
     color: var(--text);
   }
-  .who,
-  figcaption {
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-  .who strong,
-  figcaption strong {
-    color: var(--text);
-  }
+
+  /* ---------- Short quotes: one black band, three in a row ---------- */
   .quotes {
     display: grid;
-    gap: 1.25rem;
-    margin-top: 3rem;
+    gap: clamp(2rem, 4vw, 2.5rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
-  @media (min-width: 860px) {
+  @media (min-width: 760px) {
     .quotes {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3.5vw, 3rem);
     }
   }
-  .quote {
-    margin: 0;
-    padding: 1.75rem 0 0.5rem;
-    border-top: 1px solid var(--line);
+  /* A thin white line above each quote, the name underneath */
+  .quotes li {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.7);
   }
-  .quote blockquote {
-    font-size: 1.05rem;
+  .quotes blockquote {
+    flex: 1;
+    margin: 0;
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+    line-height: 1.5;
+    color: var(--text);
+    text-wrap: pretty;
+  }
+  .quotes p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .quotes strong {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .quotes span {
+    color: var(--muted);
+  }
+
+  /* ---------- Inside the sessions ---------- */
+  .sessions-stage {
+    position: relative;
+  }
+  .sessions-section {
+    padding-block: 0;
+    background: var(--black);
+    color: #fff;
+  }
+  /* Desktop: heading over the top of the videos, white on a soft dark gradient that
+     fades to nothing (like the home hero). Pointer events pass through to the strip below. */
+  @media (min-width: 900px) {
+    .sessions-overlay {
+      position: absolute;
+      inset: 0 0 auto 0;
+      z-index: 2;
+      padding-top: clamp(1.75rem, 3vw, 2.5rem);
+      pointer-events: none;
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.82);
+      --bg: var(--black);
+    }
+    .sessions-stage::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 70%;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(11, 11, 11, 0.72) 0%,
+        rgba(11, 11, 11, 0.4) 45%,
+        rgba(11, 11, 11, 0) 100%
+      );
+    }
+    .sessions-overlay .sessions-top {
+      align-items: flex-start;
+      margin-bottom: 0;
+    }
+    .sessions-overlay .sessions-head h2 {
+      color: #ffffff;
+    }
+  }
+  .sessions-top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .sessions-head {
+    max-width: 40rem;
+    text-align: left;
+  }
+  .sessions-head h2 {
+    margin: 0 0 0.75rem;
+    text-align: left;
+  }
+  .sessions-head p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  /* The strip: edge to edge across the screen, no gaps, no scrollbar, drifting slowly (see the script).
+     Phones show 1.2 videos so the next one peeks in; desktop shows 2, large. */
+  .strip {
+    --per-view: 1.2;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .strip {
+      --per-view: 2;
+    }
+  }
+  .strip-item {
+    flex: 0 0 calc(100% / var(--per-view));
+    min-width: 0;
+  }
+  /* Taller video cards give the sessions section more presence. */
+  .strip-media {
+    aspect-ratio: 16 / 15;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .strip-media video,
+  .strip-media :global(.slot) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  /* Reduced motion: no drift, so it snaps one video at a time when swiped */
+  @media (prefers-reduced-motion: reduce) {
+    .strip {
+      scroll-snap-type: x mandatory;
+    }
+    .strip-item {
+      scroll-snap-align: start;
+    }
+  }
+
+  /* The CTA sits over the video strip, clear against either light or dark footage. */
+  .sessions-cta {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: clamp(1rem, 3vw, 2rem);
+    display: flex;
+    width: min(calc(100% - 2rem), 24rem);
+    margin: 0;
+    transform: translateX(-50%);
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+  }
+  .sessions-cta:hover,
+  .sessions-cta:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #ffffff;
+    transform: translateX(-50%);
   }
 </style>

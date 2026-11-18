@@ -1,47 +1,91 @@
 ---
+/**
+ * Closing booking band: heading and a short line on the left, the WhatsApp button on the right,
+ * and a "Prefer email?" link to the /book/ page.
+ */
 import WhatsAppButton from './WhatsAppButton.astro';
+import { withBase } from '../utils/paths';
 
 interface Props {
-  title?: string;
-  text?: string;
+  title: string;
+  text: string;
+  buttonLabel?: string;
+  tone?: 'dark' | 'light';
 }
-const {
-  title = "Start <span class='accent'>training</span>",
-  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-} = Astro.props;
+const { title, text, buttonLabel, tone = 'dark' } = Astro.props;
 ---
 
-<section class="section section--alt cta">
-  <div class="container cta-grid">
-    <h2 set:html={title} />
-    <div>
-      <p class="lead">{text}</p>
-      <WhatsAppButton />
+<section class:list={['cta', tone === 'dark' ? 'on-dark' : 'light']} aria-label="Get started">
+  <div class="container band">
+    <div class="band-text">
+      <h2>{title}</h2>
+      <p>{text}</p>
+    </div>
+    <div class="band-action">
+      <WhatsAppButton label={buttonLabel} />
+    </div>
+    <div class="band-form">
+      <p class="email-prompt">Prefer email? <a class="email-link" href={withBase('/book/')}>Send an enquiry</a></p>
     </div>
   </div>
 </section>
 
 <style>
   .cta {
+    padding-block: clamp(3rem, 5vw, 4rem);
+  }
+  .light {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .band {
+    /* Same editorial measure as the Services rows */
+    max-width: calc(960px + 2 * var(--pad));
+    display: grid;
+    gap: 1.25rem 2rem;
+    align-items: center;
+  }
+  .band-text h2 {
+    margin: 0 0 0.4rem;
+    text-align: left;
+  }
+  .band-text p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .band-form {
+    padding-top: 1rem;
     border-top: 1px solid var(--line);
   }
-  .cta-grid {
-    display: grid;
-    gap: 1.5rem;
+  /* The WhatsApp button in black and white: inverts to white with a black outline on hover */
+  .band-action :global(.btn) {
+    border-color: var(--black);
+    background: var(--black);
+    color: #ffffff;
   }
-  .cta h2 {
+  .band-action :global(.btn:hover),
+  .band-action :global(.btn:focus-visible) {
+    border-color: var(--black);
+    background: #ffffff;
+    color: var(--black);
+    transform: none;
+  }
+  .band-form :global(.email-link) {
+    margin-top: 0;
+  }
+  .band-form :global(.email-prompt) {
     margin: 0;
-    max-width: 12ch;
   }
-  @media (min-width: 860px) {
-    .cta-grid {
-      grid-template-columns: 1.2fr 1fr;
-      gap: 4rem;
-      align-items: end;
+  @media (min-width: 760px) {
+    .band {
+      grid-template-columns: 1fr auto;
+    }
+    .band-form {
+      grid-column: 1 / -1;
     }
   }
   @media (max-width: 520px) {
-    .cta :global(.btn) {
+    .band-action :global(.btn) {
       width: 100%;
     }
   }

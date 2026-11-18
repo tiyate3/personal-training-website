@@ -12,9 +12,9 @@
   --text: #111111;
   --muted: #4b4e53;
   --faint: #85878b;
-  --accent: #ff5a1f;
-  /* Orange for small text: #FF5A1F is only 3.1:1 on white, so small text uses a darker shade */
-  --accent-text: #c2410c;
+  --accent: #ba4b21;
+  /* Dark burnt orange for readable accent text on white */
+  --accent-text: #9e3d18;
   --black: #0b0b0b;
 
   --font-display: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -22,17 +22,27 @@
   /* Small uppercase labels */
   --font-nav: var(--font-body);
 
-  --max: 1320px;
+  /* Editorial widths: text sits in a narrow centred column, images and maps break out wider */
+  --col: 700px;
+  --wide: 1100px;
+  --max: var(--wide);
   --pad: clamp(1.25rem, 4vw, 3rem);
-  --section: clamp(3rem, 6vw, 5.5rem);
-  --header-h: 76px;
+  --section: clamp(4.5rem, 9vw, 8rem);
+  /* Header height: one row, a 40px logo with 24px above and below (set in Header.astro).
+     Keep in step with Header.astro. 76px on small screens. */
+  --header-h: 88px;
   --radius: 0px;
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
-/* Black sections (heroes, footer): same tokens, dark values */
-.on-dark,
-.page-hero {
+@media (max-width: 960px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+
+/* Black sections (home hero, pricing, footer): same tokens, dark values */
+.on-dark {
   --bg: var(--black);
   --surface: #151515;
   --surface-2: #1c1c1c;
@@ -87,32 +97,40 @@ a {
 /* ---------- Type ---------- */
 
 h1,
+h2 {
+  text-align: center;
+}
+
+h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  line-height: 1.1;
+  /* Headings set in capitals; slightly open spacing keeps them readable */
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   overflow-wrap: break-word;
   margin: 0 0 1.25rem;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2.6rem, 7vw, 6rem);
+  font-size: clamp(1.9rem, 4.2vw, 3.25rem);
 }
 
 h2 {
-  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
   font-family: var(--font-body);
-  font-weight: 700;
-  line-height: 1.05;
+  font-weight: 600;
+  line-height: 1.15;
 }
 
 h3 {
-  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
   font-family: var(--font-body);
-  font-weight: 650;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   line-height: 1.15;
 }
 
@@ -132,34 +150,35 @@ p {
   color: var(--muted);
 }
 
-/* Compact label with a short orange marker */
+/* Compact label above a heading */
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
   font-family: var(--font-nav);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text);
   margin: 0 0 1.25rem;
 }
 
-.eyebrow::before {
-  content: '';
-  flex: none;
-  width: 1.75rem;
-  height: 2px;
-  background: var(--accent);
-}
-
 /* ---------- Layout ---------- */
 
+/* Wide measure (images, maps, galleries) */
 .container {
   width: 100%;
-  max-width: var(--max);
+  max-width: calc(var(--wide) + 2 * var(--pad));
   margin-inline: auto;
   padding-inline: var(--pad);
+}
+
+/* Narrow centred column for text: as a container, or as a block inside a wide container */
+.narrow {
+  max-width: var(--col);
+  margin-inline: auto;
+}
+
+.container.narrow {
+  max-width: calc(var(--col) + 2 * var(--pad));
 }
 
 .section {
@@ -182,16 +201,15 @@ p {
   }
 }
 
-/* Section heading row: heading left, a link or short text right, ruled underneath */
+/* Section heading: centred, with an optional short line of text under it */
 .section-head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.25rem 3rem;
-  padding-bottom: clamp(1rem, 2vw, 1.5rem);
-  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
-  border-bottom: 1px solid var(--line);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: var(--col);
+  margin: 0 auto clamp(2rem, 4vw, 3rem);
+  text-align: center;
 }
 
 .section-head h2 {
@@ -200,7 +218,39 @@ p {
 
 .section-head p {
   margin: 0;
-  max-width: 26rem;
+  max-width: 34rem;
+}
+
+/* Email alternative; only the enquiry action is linked. */
+.email-prompt {
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.email-link {
+  display: inline;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: currentColor;
+  color: inherit;
+  transition: color 0.2s, border-color 0.2s;
+}
+.email-link:hover,
+.email-link:focus-visible {
+  color: var(--text);
+  text-decoration-thickness: 2px;
+}
+
+/* Centred row of buttons */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 /* ---------- Buttons & links ---------- */
@@ -218,9 +268,10 @@ p {
   font-family: var(--font-body);
   font-style: normal;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.85rem;
   line-height: 1;
-  letter-spacing: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
   box-shadow: none;
@@ -236,8 +287,19 @@ p {
   color: #ffffff;
 }
 
-.btn--whatsapp {
+/* WhatsApp: an orange outline only, filling with the orange when hovered, tapped or focused */
+.btn--primary.btn--whatsapp {
+  border-color: var(--accent);
+  background: transparent;
+  color: var(--text);
   font-style: normal;
+}
+.btn--primary.btn--whatsapp:hover,
+.btn--primary.btn--whatsapp:focus-visible,
+.btn--primary.btn--whatsapp:active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .btn--primary:hover,
@@ -298,49 +360,34 @@ p {
     100% 2px;
 }
 
-.text-link .arrow {
-  transition: transform 0.4s var(--ease);
-}
-
-.text-link:hover .arrow {
-  transform: translateX(4px);
-}
-
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
-/* ---------- Inner page hero ---------- */
+/* ---------- Inner page hero: centred title on white ---------- */
 
 .page-hero {
-  padding-top: calc(var(--header-h) + clamp(1.75rem, 5vw, 3.5rem));
-  padding-bottom: clamp(2rem, 4vw, 3rem);
+  padding-top: calc(var(--header-h) + clamp(1.75rem, 4vw, 3rem));
+  padding-bottom: 0;
+  text-align: center;
 }
 
 .page-hero h1 {
-  font-size: clamp(2.6rem, 7.5vw, 6.25rem);
   margin-bottom: 0;
 }
 
 .page-hero .lead {
-  margin: 0;
+  margin: 0 auto;
 }
 
-/* Ruled strip under the title: intro text left, extra detail right */
+/* Short intro under the title, centred */
 .hero-foot {
   display: grid;
-  gap: 1.75rem 4rem;
-  margin-top: clamp(1.25rem, 2.5vw, 2rem);
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
-}
-
-@media (min-width: 900px) {
-  .hero-foot {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
+  justify-items: center;
+  gap: 1.5rem;
+  max-width: var(--col);
+  margin: clamp(1rem, 2vw, 1.5rem) auto 0;
 }
 
 /* Small "label: value" list */
@@ -372,23 +419,23 @@ p {
 
 /* ---------- Motion ---------- */
 
-/* Keep reveal motion on page heroes only. */
-.js :is(.hero, .page-hero) [data-reveal] {
+/* Home hero reveal */
+.js .hero [data-reveal] {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(2px);
   transition:
-    opacity 0.7s var(--ease),
-    transform 0.7s var(--ease);
-  transition-delay: calc(var(--d, 0) * 60ms);
+    opacity 0.35s var(--ease),
+    transform 0.35s var(--ease);
+  transition-delay: calc(var(--d, 0) * 25ms);
 }
 
-.js :is(.hero, .page-hero) [data-reveal].is-in {
+.js .hero [data-reveal].is-in {
   opacity: 1;
   transform: none;
 }
 
 /* Photos simply fade in */
-.js :is(.hero, .page-hero) [data-reveal='image'] {
+.js .hero [data-reveal='image'] {
   transform: none;
 }
 
@@ -427,7 +474,7 @@ a.visually-hidden:focus {
   }
   .js [data-reveal],
   .js [data-reveal='image'],
-  .js :is(.hero, .page-hero) [data-reveal] {
+  .js .hero [data-reveal] {
     opacity: 1;
     transform: none;
     clip-path: none;

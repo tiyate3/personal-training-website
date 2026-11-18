@@ -1,0 +1,78 @@
+---
+/**
+ * Page opening, like a magazine masthead: a very large title in capitals,
+ * a rule beneath it, then the intro.
+ */
+interface Props {
+  title: string;
+  intro: string;
+  /** 'band': a light grey band with the intro close under the title (no rule).
+      'dark': the same, but a black band with white text. */
+  variant?: 'band' | 'dark';
+}
+const { title, intro, variant } = Astro.props;
+---
+
+<section
+  class:list={[
+    'page-hero',
+    'masthead',
+    { 'masthead--band': variant === 'band' || variant === 'dark', 'masthead--dark on-dark': variant === 'dark' },
+  ]}
+>
+  <div class="container">
+    <h1 data-reveal>{title}</h1>
+    <div class="strip" data-reveal style="--d: 1">
+      <p class="intro">{intro}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .masthead {
+    padding-top: calc(var(--header-h) + clamp(1rem, 2.5vw, 2rem));
+    padding-bottom: 0;
+    text-align: left;
+  }
+  .masthead h1 {
+    margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+    font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  /* Full-width rule under the title, the intro beneath it */
+  .strip {
+    padding-top: clamp(1rem, 2vw, 1.5rem);
+    border-top: 1px solid var(--line);
+  }
+  .intro {
+    margin: 0;
+    max-width: 40rem;
+    color: var(--muted);
+  }
+  /* Band: light grey across the full width, left-aligned, intro tight under the title */
+  .masthead--band {
+    padding-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+    background: var(--surface-2);
+  }
+  .masthead--dark {
+    background: var(--black);
+  }
+  .masthead--band h1 {
+    margin-bottom: 0.6rem;
+  }
+  .masthead--band .strip {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .masthead--band .intro {
+    max-width: 34rem;
+  }
+  /* The page carries straight on below: the next section starts close under the intro */
+  :global(.masthead + .section) {
+    padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+</style>

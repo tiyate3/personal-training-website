@@ -1,22 +1,40 @@
 ---
 /**
- * An empty, clearly marked space for one of Mustafa's own photos or videos.
- * Pass `src` once the file exists in /public/media to show it instead.
+ * A space for one of Mustafa's own photos or videos.
+ * Pass `src` once the file exists in /public/media to show it instead of the placeholder.
+ * Until then the placeholder shows only what belongs there, centred.
  */
+import { withBase } from '../utils/paths';
+
 interface Props {
   label: string;
   ratio?: string;
   src?: string;
   type?: 'image' | 'video';
   class?: string;
+  /** Wipe the image in when it scrolls into view. */
+  reveal?: boolean;
+  /** Reveal stagger step (0, 1, 2…). */
+  delay?: number;
 }
-import { withBase } from '../utils/paths';
 
-const { label, ratio = '4 / 5', src, type = 'image', class: className = '' } = Astro.props;
+const {
+  label,
+  ratio = '4 / 5',
+  src,
+  type = 'image',
+  class: className = '',
+  reveal = true,
+  delay = 0,
+} = Astro.props;
 const mediaSrc = src?.startsWith('/') ? withBase(src) : src;
 ---
 
-<figure class:list={['slot', className]} style={`aspect-ratio: ${ratio}`}>
+<figure
+  class:list={['slot', className]}
+  style={`aspect-ratio: ${ratio}; --d: ${delay}`}
+  data-reveal={reveal ? 'image' : undefined}
+>
   {
     mediaSrc ? (
       type === 'video' ? (
@@ -26,21 +44,7 @@ const mediaSrc = src?.startsWith('/') ? withBase(src) : src;
       )
     ) : (
       <div class="empty" role="img" aria-label={`Placeholder: ${label}`}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-          {type === 'video' ? (
-            <>
-              <rect x="2.5" y="5" width="14" height="14" rx="2" />
-              <path d="m16.5 10 5-3v10l-5-3" />
-            </>
-          ) : (
-            <>
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.8" />
-              <path d="m21 15-5-5L5 21" />
-            </>
-          )}
-        </svg>
-        <span>{label}</span>
+        <span class="what">{label}</span>
       </div>
     )
   }
@@ -52,7 +56,6 @@ const mediaSrc = src?.startsWith('/') ? withBase(src) : src;
     margin: 0;
     width: 100%;
     overflow: hidden;
-    border-radius: var(--radius);
     background: var(--surface-2);
   }
   img,
@@ -61,32 +64,24 @@ const mediaSrc = src?.startsWith('/') ? withBase(src) : src;
     height: 100%;
     object-fit: cover;
   }
+  /* Placeholder: just what belongs here, centred */
   .empty {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 0.8rem;
-    padding: 1.5rem;
-    text-align: center;
-    color: #55585c;
-    border: 1px dashed #a3a5a2;
-    border-radius: inherit;
+    padding: clamp(1rem, 2.2vw, 1.5rem);
     background: var(--surface-2);
+    color: var(--muted);
+    text-align: center;
   }
-  .empty svg {
-    width: 2rem;
-    height: 2rem;
-    flex: none;
-  }
-  .empty span {
+  .what {
+    max-width: 22rem;
     font-family: var(--font-nav);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    line-height: 1.1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
   }
 </style>
