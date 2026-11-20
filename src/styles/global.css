@@ -508,7 +508,7 @@ a.visually-hidden:focus {
     gap: 1rem;
   }
 
-  /* --- Main action: solid orange, square, 52px, full width, with an arrow ---
+  /* --- Main action: solid orange, square, 52px, full width ---
      ("Ready to start?" on Results keeps its own size and place over the video strip) */
   .btn--primary,
   .book-submit {
