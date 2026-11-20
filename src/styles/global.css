@@ -62,6 +62,9 @@
 }
 
 html {
+  /* Black behind the page, so the iPhone's bounce past the top or bottom shows black (matching
+     the header and footer) instead of white. The page itself stays white via body. */
+  background: var(--black);
   zoom: 0.9;
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
