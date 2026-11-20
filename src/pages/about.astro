@@ -52,7 +52,7 @@ const principles = [
       </figure>
     </div>
     <div class="split-media">
-      <ImageSlot label="Mustafa: nutrition / kitchen photo" ratio="auto" reveal={false} />
+      <ImageSlot label="A colourful meal with vegetables and chickpeas" src="/images/anna-pelzer-IGfIGP5ONV0-unsplash.jpg" ratio="auto" reveal={false} />
     </div>
   </section>
 
@@ -271,6 +271,9 @@ const principles = [
   .split-media :global(.slot) {
     height: 100%;
   }
+  .quote-section .split-media :global(img) {
+    object-position: 60% center;
+  }
   @media (min-width: 860px) {
     .split {
       grid-template-columns: 1fr 1fr;
@@ -375,27 +378,14 @@ const principles = [
     margin: 0;
     padding: 0;
   }
+  /* Solid black, dark grey on hover */
   .social-btn {
-    padding: 0.75rem 1.2rem;
-    border-width: 1px;
-    border-radius: 0;
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-  }
-  /* Black and white: solid black, inverting to white with a black outline on hover */
-  .social-btn {
-    border-color: var(--black);
-    background: var(--black);
-    color: #ffffff;
-  }
-  .social-btn:hover,
-  .social-btn:focus-visible {
-    transform: none;
-    border-color: var(--black);
-    background: #ffffff;
-    color: var(--black);
+    --btn-bg: var(--black);
+    --btn-fg: #ffffff;
+    --btn-border: var(--black);
+    --btn-fill: #2a2a2a;
+    --btn-fill-fg: #ffffff;
+    --btn-fill-border: #2a2a2a;
   }
   /* No URL yet: looks the same, but isn't interactive */
   .social-btn.is-soon {

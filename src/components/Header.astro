@@ -261,12 +261,16 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     background: #c2410c;
   }
 
-  /* Book a session: a thin white outlined button that fills white on hover */
+  /* Book a session: the small version of the site button. A thin white outline with a faint
+     white tint on hover; filled white on the booking page */
   .nav-cta {
     display: inline-flex;
     align-items: center;
-    padding: 0.65rem 1.25rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1.25rem;
     border: 1px solid #ffffff;
+    border-radius: 0.6rem;
+    background: transparent;
     font-family: var(--font-display);
     font-size: 0.88rem;
     font-weight: 700;
@@ -277,11 +281,17 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     white-space: nowrap;
     color: #ffffff;
     transition:
-      background 0.2s,
-      color 0.2s;
+      background-color 0.2s ease,
+      color 0.2s ease,
+      scale 0.15s ease;
   }
   .nav-cta:hover,
-  .nav-cta:focus-visible,
+  .nav-cta:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .nav-cta:active {
+    scale: 0.98;
+  }
   .nav-cta[aria-current='page'] {
     background: #ffffff;
     color: var(--black);
@@ -391,10 +401,14 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       align-self: stretch;
       margin-top: -2rem;
       padding: 1.1rem 0;
+      min-height: 0;
       border: 0;
       border-bottom: 1px solid var(--line);
+      border-radius: 0;
       background: none;
       font-size: clamp(1.2rem, 5vw, 1.5rem);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       color: var(--accent);
     }
     .nav-cta:hover,

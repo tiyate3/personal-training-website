@@ -55,8 +55,13 @@ const schema = {
         <span class="line" data-reveal style="--d: 1">Train like an</span>
         <span class="line accent" data-reveal style="--d: 2"><em>athlete.</em></span>
       </h1>
+      <p class="hero-intro" data-reveal style="--d: 3">
+        I'm Mustafa, a personal trainer based in Marylebone who trains as an all-round athlete. I help
+        busy people get strong, move well and feel fit, with a plan built around their week.
+        {' '}<a href={withBase('/about/')}>More about me</a>
+      </p>
 
-      <div class="hero-foot" data-reveal style="--d: 3">
+      <div class="hero-foot" data-reveal style="--d: 4">
         <div class="actions">
           <WhatsAppButton />
           <a class="btn btn--ghost hero-services" href={withBase('/services/')}>Services</a>
@@ -110,7 +115,13 @@ const schema = {
         </article>
         <article class="place">
           <div class="place-media">
-            <ImageSlot label="A private in-home session" ratio="3 / 2" delay={1} />
+            <ImageSlot
+              label="Private in-home training montage"
+              src="/media/home_videos_montage.mp4"
+              type="video"
+              ratio="3 / 2"
+              delay={1}
+            />
             <p class="place-bar">Across central London</p>
           </div>
           <div class="place-text" data-reveal style="--d: 1">
@@ -124,14 +135,42 @@ const schema = {
 
   <GoogleReviews />
 
-  <!-- Booking: WhatsApp first, the email enquiry on its own /book/ page -->
+  <!-- Booking, split in two: how it works on the left; WhatsApp first on the right, the email
+       enquiry on its own /book/ page -->
   <section class="section on-dark book-section" id="book">
-    <div class="container narrow book">
+    <div class="container book-split">
+      <div class="how">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-num" aria-hidden="true">1</span>
+            <div>
+              <h3>Message me</h3>
+              <p>Tell me your goals on WhatsApp or through the form.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">2</span>
+            <div>
+              <h3>Book your first session</h3>
+              <p>We talk through your goals and do a first workout at your level.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-num" aria-hidden="true">3</span>
+            <div>
+              <h3>Your plan</h3>
+              <p>You leave with a clear plan built around your week.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    <div class="book">
       <div class="book-intro">
         <h2>Book a session</h2>
         <p>Tell me your goals and we’ll find a training plan that works for you.</p>
       </div>
-      <!-- Buttons, then the email link under them: all centred -->
+      <!-- Buttons, then the email link under them -->
       <div class="book-actions">
         <div class="actions">
           <WhatsAppButton label="Message me" />
@@ -139,6 +178,7 @@ const schema = {
         </div>
         <p class="email-prompt">Prefer email? <a class="email-link" href={withBase('/book/')}>Send an enquiry</a></p>
       </div>
+    </div>
     </div>
   </section>
   <section class="section location-sections" aria-label="Location and contact">
@@ -253,15 +293,12 @@ const schema = {
     text-align: left;
   }
   .hero :global(.btn--primary.btn--whatsapp) {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #fff;
-  }
-  .hero :global(.btn--primary.btn--whatsapp:hover),
-  .hero :global(.btn--primary.btn--whatsapp:focus-visible) {
-    border-color: #d46a3b;
-    background: #d46a3b;
-    color: #fff;
+    --btn-bg: var(--accent);
+    --btn-fg: #fff;
+    --btn-border: var(--accent);
+    --btn-fill: #d46a3b;
+    --btn-fill-border: #d46a3b;
+    --btn-fill-fg: #fff;
   }
   .hero-eyebrow {
     color: #fff;
@@ -296,6 +333,52 @@ const schema = {
   .hero-title em {
     font-style: italic;
   }
+  /* Hi, I'm Mustafa: two lines under the headline, with a quiet link to About */
+  .hero-intro {
+    max-width: 34rem;
+    margin: clamp(1rem, 2vw, 1.4rem) 0 0;
+    font-size: clamp(0.98rem, 1.3vw, 1.08rem);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: left;
+  }
+  /* Desktop: the intro moves to the right, level with the bottom of the headline and buttons,
+     instead of sitting in line under the headline */
+  @media (min-width: 960px) {
+    .hero .hero-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+      column-gap: clamp(3rem, 7vw, 6rem);
+      align-items: end;
+      max-width: calc(var(--wide) + 2 * var(--pad));
+    }
+    .hero-content > :not(.hero-intro) {
+      grid-column: 1;
+    }
+    .hero-intro {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      align-self: end;
+      margin: 0;
+      padding-left: 1.25rem;
+      border-left: 1px solid rgba(255, 255, 255, 0.35);
+      font-size: 0.98rem;
+    }
+  }
+  .hero-intro a {
+    margin-left: 0.2em;
+    color: #ffffff;
+    font-weight: 400;
+    font-style: italic;
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+  .hero-intro a:hover,
+  .hero-intro a:focus-visible {
+    text-decoration-color: var(--accent);
+  }
   .hero-foot {
     display: grid;
     justify-items: center;
@@ -315,24 +398,15 @@ const schema = {
       align-items: center;
       gap: 0.9rem;
     }
-    .hero-foot .actions :global(.btn--whatsapp) {
-      width: 100%;
-      padding-block: 0.9rem;
-    }
+    .hero-foot .actions :global(.btn--whatsapp),
     .hero-foot .actions .hero-services {
-      padding: 0.25rem 0;
-      border: 0;
-      border-radius: 0;
-      background: none;
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.35em;
+      width: 100%;
     }
-    .hero-foot .actions .hero-services:hover,
-    .hero-foot .actions .hero-services:focus-visible {
-      background: none;
-      color: var(--text);
-    }
+  }
+
+  /* Home page only: a third less space above and below each section */
+  .section {
+    padding-block: calc(var(--section) * 0.67);
   }
 
   /* ---------- Where ---------- */
@@ -500,53 +574,106 @@ const schema = {
     }
   }
 
-  /* ---------- Booking ---------- */
+  /* ---------- Booking: how it works | book a session ---------- */
+  .book-split {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 3.5rem);
+  }
+  @media (min-width: 860px) {
+    .book-split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0;
+    }
+    .how {
+      padding-right: clamp(2.5rem, 5vw, 4.5rem);
+      border-right: 1px solid var(--line);
+    }
+    .book {
+      padding-left: clamp(2.5rem, 5vw, 4.5rem);
+    }
+  }
+  .how h2 {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  /* Three steps: a small number, the step in bold, a line under it; hairlines between */
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--line);
+  }
+  .steps li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .steps h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+  .steps p {
+    margin: 0;
+    color: var(--muted);
+  }
   .book {
     display: grid;
+    align-content: start;
     gap: clamp(1.75rem, 3.5vw, 2.5rem);
   }
   .book-intro {
-    text-align: center;
+    text-align: left;
   }
   .book-intro h2 {
     margin-bottom: 1.5rem;
+    text-align: left;
   }
   .book-intro p {
     max-width: 30rem;
-    margin: 0 auto;
+    margin: 0;
     font-size: 1.08rem;
   }
-  /* The link sits centred under the buttons, its underline only as wide as its text */
+  /* The link sits under the buttons, its underline only as wide as its text */
   .book-actions {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .book-actions .actions {
+    justify-content: flex-start;
   }
   .book-actions .email-prompt {
     margin-top: 1.75rem;
   }
   .book-section :global(.actions .btn) {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #ffffff;
-  }
-  .book-section :global(.actions .btn:hover),
-  .book-section :global(.actions .btn:focus-visible) {
-    border-color: #d46a3b;
-    background: #d46a3b;
-    color: #ffffff;
+    --btn-bg: var(--accent);
+    --btn-fg: #ffffff;
+    --btn-border: var(--accent);
+    --btn-fill: #d46a3b;
+    --btn-fill-border: #d46a3b;
+    --btn-fill-fg: #ffffff;
   }
   .book-section :global(.actions .btn:nth-child(2)) {
-    border-color: #ffffff;
-    background: #ffffff;
-    color: var(--black);
-  }
-  .book-section :global(.actions .btn:nth-child(2):hover),
-  .book-section :global(.actions .btn:nth-child(2):focus-visible) {
-    border-color: #e8e8e8;
-    background: #e8e8e8;
-    color: var(--black);
+    --btn-bg: #ffffff;
+    --btn-fg: var(--black);
+    --btn-border: #ffffff;
+    --btn-fill: #e8e8e8;
+    --btn-fill-border: #e8e8e8;
+    --btn-fill-fg: var(--black);
   }
   /* ---------- Find me and get in touch ---------- */
   /* White, between the black booking band and the black footer */
@@ -625,19 +752,13 @@ const schema = {
     font-size: 0.8rem;
     color: var(--muted);
   }
+  /* Get directions / Message me: the small pill, like "Book a session" in the header */
   .location-copy :global(.location-action) {
-    display: inline-flex;
     width: fit-content;
-    min-height: 2.3rem;
+    min-height: 2.5rem;
     margin-top: 1.25rem;
-    padding: 0.5rem 0.9rem;
-    border-width: 1px;
-    border-radius: 0;
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    font-weight: 400;
-    letter-spacing: 0.035em;
-    white-space: nowrap;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.8rem;
   }
   .location-follow ul {
     display: grid;

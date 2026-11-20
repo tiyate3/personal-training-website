@@ -44,6 +44,7 @@ export const NAV = [
   { href: '/about/', label: 'About' },
   { href: '/services/', label: 'Services' },
   { href: '/testimonials/', label: 'Results' },
+  { href: '/faq/', label: 'FAQs' },
 ];
 
 export const SERVICES = [

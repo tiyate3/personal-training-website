@@ -59,16 +59,12 @@ const { title, text, buttonLabel, tone = 'dark' } = Astro.props;
   }
   /* The WhatsApp button in black and white: inverts to white with a black outline on hover */
   .band-action :global(.btn) {
-    border-color: var(--black);
-    background: var(--black);
-    color: #ffffff;
-  }
-  .band-action :global(.btn:hover),
-  .band-action :global(.btn:focus-visible) {
-    border-color: var(--black);
-    background: #ffffff;
-    color: var(--black);
-    transform: none;
+    --btn-bg: var(--black);
+    --btn-fg: #ffffff;
+    --btn-border: var(--black);
+    --btn-fill: #2a2a2a;
+    --btn-fill-fg: #ffffff;
+    --btn-fill-border: #2a2a2a;
   }
   .band-form :global(.email-link) {
     margin-top: 0;

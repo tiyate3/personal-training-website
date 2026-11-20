@@ -516,15 +516,11 @@ const quotes = [
     width: min(calc(100% - 2rem), 24rem);
     margin: 0;
     transform: translateX(-50%);
-    border: 1px solid var(--accent);
-    background: transparent;
-    color: var(--accent);
-  }
-  .sessions-cta:hover,
-  .sessions-cta:focus-visible {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #ffffff;
-    transform: translateX(-50%);
+    --btn-bg: transparent;
+    --btn-fg: var(--accent);
+    --btn-border: var(--accent);
+    --btn-fill: color-mix(in srgb, var(--accent) 16%, rgba(0, 0, 0, 0.35));
+    --btn-fill-fg: #ffffff;
+    --btn-fill-border: var(--accent);
   }
 </style>

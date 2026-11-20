@@ -225,16 +225,12 @@ const enquiryOptions = {
   }
   /* Send enquiry: a simple solid black button, a shade lighter on hover */
   .enquiry .btn {
-    border-color: var(--black);
-    background: var(--black);
-    color: #ffffff;
-    cursor: pointer;
-  }
-  .enquiry .btn:hover,
-  .enquiry .btn:focus-visible {
-    border-color: #333333;
-    background: #333333;
-    color: #ffffff;
+    --btn-bg: var(--black);
+    --btn-fg: #ffffff;
+    --btn-border: var(--black);
+    --btn-fill: #333333;
+    --btn-fill-fg: #ffffff;
+    --btn-fill-border: #333333;
   }
   .enquiry .btn:disabled {
     opacity: 0.5;
