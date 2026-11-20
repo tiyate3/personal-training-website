@@ -359,10 +359,12 @@ const principles = [
     object-position: center 60%;
   }
   @media (max-width: 859px) {
+    /* Full width always; the height is 4:5 of the width, capped at 75% of the screen.
+       (Capping with max-height on an aspect-ratio box shrank the width and left white edges.) */
     .follow-section .split-media {
-      aspect-ratio: 4 / 5;
-      max-height: 75vh;
       width: 100%;
+      aspect-ratio: auto;
+      height: min(125vw, 75vh);
     }
   }
   .socials {

@@ -530,48 +530,48 @@ a.visually-hidden:focus {
     font-weight: 700 !important;
     letter-spacing: 0.12em !important;
   }
-  .btn--primary::after,
-  .book-submit::after,
-  .sessions-cta::after {
-    content: '→';
-    letter-spacing: 0;
-  }
   .btn--primary:active,
   .book-submit:active,
   .sessions-cta:active {
     background: #9e3d18 !important;
   }
 
-  /* --- Everything else: a text link in small capitals, thin underline, arrow --- */
+  /* --- Everything else: an outline button the same size and shape as the main one --- */
   .btn--ghost:not(.book-submit) {
-    display: inline-flex !important;
-    width: auto !important;
-    min-height: 0;
-    padding: 0.35rem 0 !important;
-    border: 0 !important;
-    border-bottom: 1px solid currentColor !important;
+    display: flex !important;
+    width: 100% !important;
+    min-height: 3.25rem;
+    padding: 0.95rem 1.25rem !important;
+    border: 1px solid currentColor !important;
     border-radius: 0 !important;
-    background: none !important;
+    background: transparent !important;
     color: var(--text) !important;
     font-family: var(--font-body) !important;
-    font-size: 0.78rem !important;
+    font-size: 0.8rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.12em !important;
     text-decoration: none !important;
     transform: none !important;
   }
-  .btn--ghost:not(.book-submit, .social-btn)::after {
-    content: '→';
-    letter-spacing: 0;
+  /* Pressed: fills with the text colour */
+  .btn--ghost:not(.book-submit):active {
+    background: var(--text) !important;
+    color: var(--bg) !important;
   }
   .btn--ghost:not(.book-submit):hover,
-  .btn--ghost:not(.book-submit):focus-visible,
-  .btn--ghost:not(.book-submit):active {
-    background: none !important;
-    color: var(--accent-text) !important;
+  .btn--ghost:not(.book-submit):focus-visible {
+    background: transparent !important;
+    color: var(--text) !important;
   }
-  .on-dark .btn--ghost:not(.book-submit):hover,
-  .on-dark .btn--ghost:not(.book-submit):active {
-    color: var(--accent) !important;
+  /* Instagram and TikTok side by side, half each */
+  .socials {
+    flex-wrap: nowrap !important;
+  }
+  .socials > li {
+    flex: 1 1 0;
+  }
+  /* Buttons stacked in a row: a little space between them */
+  .actions {
+    gap: 0.75rem;
   }
 }
