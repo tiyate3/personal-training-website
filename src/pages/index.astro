@@ -8,6 +8,10 @@ import { BRAND, BASE_AREA, GYM_ADDRESS, SERVICES, SOCIALS, STATIONS, TRAINER, WH
 import { withBase } from '../utils/paths';
 
 const sameAs = Object.values(SOCIALS).filter(Boolean);
+
+// The short intro: in the hero on tablets and desktop, just under the hero on phones
+const introText =
+  "I'm Mustafa, a personal trainer based in Marylebone who trains as an all-round athlete. I help busy people get strong, move well and feel fit, with a plan built around their week.";
 const addressParts = GYM_ADDRESS.match(/^(.*?)(?:\s+)([A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i);
 
 const gymMapUrl = `https://www.google.com/maps?q=${encodeURIComponent(GYM_ADDRESS)}&output=embed`;
@@ -56,9 +60,7 @@ const schema = {
         <span class="line accent" data-reveal style="--d: 2"><em>athlete.</em></span>
       </h1>
       <p class="hero-intro" data-reveal style="--d: 3">
-        I'm Mustafa, a personal trainer based in Marylebone who trains as an all-round athlete. I help
-        busy people get strong, move well and feel fit, with a plan built around their week.
-        {' '}<a href={withBase('/about/')}>More about me</a>
+        {introText}{' '}<a href={withBase('/about/')}>More about me</a>
       </p>
 
       <div class="hero-foot" data-reveal style="--d: 4">
@@ -88,6 +90,13 @@ const schema = {
         </div>
       </div>
     </a>
+  </section>
+
+  <!-- Phones only: the intro sits here on white, just above "Where I train clients", to keep the hero uncluttered -->
+  <section class="intro-phone" aria-label="About Mustafa">
+    <div class="container">
+      <p class="intro-phone-text">{introText}{' '}<a href={withBase('/about/')}>More about me</a></p>
+    </div>
   </section>
 
   <!-- Where I train clients: centred heading and line, a rule under, then the two places side by side -->
@@ -378,6 +387,35 @@ const schema = {
   .hero-intro a:hover,
   .hero-intro a:focus-visible {
     text-decoration-color: var(--accent);
+  }
+  /* Phones: the intro leaves the hero and shows on white, just above "Where I train clients" */
+  .intro-phone {
+    display: none;
+  }
+  @media (max-width: 600px) {
+    .hero .hero-intro {
+      display: none;
+    }
+    .intro-phone {
+      display: block;
+      padding-top: 2.25rem;
+      background: var(--bg);
+    }
+    .intro-phone-text {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .intro-phone-text a {
+      margin-left: 0.2em;
+      color: var(--text);
+      font-style: italic;
+      white-space: nowrap;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+    }
   }
   .hero-foot {
     display: grid;
