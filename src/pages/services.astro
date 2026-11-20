@@ -54,12 +54,17 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
 
 <style>
   /* ---------- Bands: one per service ---------- */
+  /* Clear the fixed nav bar. The gap before the first photo sits inside the first band,
+     so it takes that band's colour instead of showing as a white strip */
   .bands {
-    padding-top: 3.85rem;
+    padding-top: var(--header-h);
+  }
+  .band--1 {
+    padding-top: 0;
   }
   @media (max-width: 760px) {
-    .bands {
-      padding-top: 3.325rem;
+    .band--1 {
+      padding-top: 12px;
     }
   }
   .band {

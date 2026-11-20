@@ -223,14 +223,18 @@ const enquiryOptions = {
   .enquiry .actions {
     margin-top: 0.75rem;
   }
-  /* A real <button>: clear the browser's grey fill so it matches the ghost links */
+  /* Send enquiry: a simple solid black button, a shade lighter on hover */
   .enquiry .btn {
-    background: transparent;
+    border-color: var(--black);
+    background: var(--black);
+    color: #ffffff;
     cursor: pointer;
   }
   .enquiry .btn:hover,
   .enquiry .btn:focus-visible {
-    background: var(--text);
+    border-color: #333333;
+    background: #333333;
+    color: #ffffff;
   }
   .enquiry .btn:disabled {
     opacity: 0.5;

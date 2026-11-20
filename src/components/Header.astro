@@ -385,10 +385,23 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     .nav ul a[aria-current='page']::after {
       bottom: 0.75rem;
     }
+    /* Same as the rows above (size, capitals, divider) but in orange, with no box */
     .nav-cta {
-      justify-content: center;
-      padding: 1rem 1.25rem;
-      font-size: 1rem;
+      display: block;
+      align-self: stretch;
+      margin-top: -2rem;
+      padding: 1.1rem 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: none;
+      font-size: clamp(1.2rem, 5vw, 1.5rem);
+      color: var(--accent);
+    }
+    .nav-cta:hover,
+    .nav-cta:focus-visible,
+    .nav-cta[aria-current='page'] {
+      background: none;
+      color: var(--accent);
     }
   }
 </style>

@@ -480,3 +480,98 @@ a.visually-hidden:focus {
     clip-path: none;
   }
 }
+
+/* =====================================================================
+   Phones (up to 600px wide)
+   One button system, full-size text and even spacing. Pages style their own buttons in scoped
+   styles that outrank this file, so the button rules here use !important, on phones only.
+   ===================================================================== */
+@media (max-width: 600px) {
+  /* Full size on phones (desktop stays at 90%): 16px body text */
+  html {
+    zoom: 1;
+  }
+
+  /* Every section gets the same space above and below */
+  :root {
+    --section: 3.5rem;
+  }
+  .section-head {
+    gap: 0.75rem;
+  }
+
+  /* Button rows stack: the main button full width, any link centred under it */
+  .actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* --- Main action: solid orange, square, 52px, full width, with an arrow ---
+     ("Ready to start?" on Results keeps its own size and place over the video strip) */
+  .btn--primary,
+  .book-submit {
+    display: flex !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+  .btn--primary,
+  .book-submit,
+  .sessions-cta {
+    min-height: 3.25rem;
+    padding: 0.95rem 1.25rem !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+  }
+  .btn--primary::after,
+  .book-submit::after,
+  .sessions-cta::after {
+    content: '→';
+    letter-spacing: 0;
+  }
+  .btn--primary:active,
+  .book-submit:active,
+  .sessions-cta:active {
+    background: #9e3d18 !important;
+  }
+
+  /* --- Everything else: a text link in small capitals, thin underline, arrow --- */
+  .btn--ghost:not(.book-submit) {
+    display: inline-flex !important;
+    width: auto !important;
+    min-height: 0;
+    padding: 0.35rem 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid currentColor !important;
+    border-radius: 0 !important;
+    background: none !important;
+    color: var(--text) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-decoration: none !important;
+    transform: none !important;
+  }
+  .btn--ghost:not(.book-submit, .social-btn)::after {
+    content: '→';
+    letter-spacing: 0;
+  }
+  .btn--ghost:not(.book-submit):hover,
+  .btn--ghost:not(.book-submit):focus-visible,
+  .btn--ghost:not(.book-submit):active {
+    background: none !important;
+    color: var(--accent-text) !important;
+  }
+  .on-dark .btn--ghost:not(.book-submit):hover,
+  .on-dark .btn--ghost:not(.book-submit):active {
+    color: var(--accent) !important;
+  }
+}
