@@ -1,7 +1,9 @@
 name: Deploy to GitHub Pages
 
-# Every push to master rebuilds the site and publishes it to the gh-pages branch,
-# which is what GitHub Pages serves (Settings > Pages > Deploy from a branch: gh-pages).
+# Every push to master rebuilds the site and publishes it straight to GitHub Pages.
+# Needs Settings > Pages > Build and deployment > Source: "GitHub Actions".
+# (Pushing to a gh-pages branch with the built-in token does not start a Pages build, so the
+# live site never updated. Deploying the build directly avoids that.)
 on:
   push:
     branches:
@@ -9,14 +11,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -37,10 +41,18 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Publish dist to the gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload the built site
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          commit_message: 'Deploy ${{ github.sha }}'
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
