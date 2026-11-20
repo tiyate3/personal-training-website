@@ -14,6 +14,8 @@ interface Props {
   image?: string;
   /** Alt text for the share image. */
   imageAlt?: string;
+  /** Title shown in link previews (WhatsApp, Instagram, etc.). Defaults to the page title. */
+  shareTitle?: string;
 }
 
 const {
@@ -22,6 +24,7 @@ const {
   schema,
   image = '/og-image.jpg',
   imageAlt = 'Mustafa the Athlete, personal training in central London',
+  shareTitle,
 } = Astro.props;
 const fullTitle = title.includes(BRAND) ? title : `${title} | ${BRAND}`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
@@ -43,7 +46,8 @@ const ogImage = new URL(`${base}/${image.replace(/^\/+/, '')}`, Astro.site).href
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={BRAND} />
-    <meta property="og:title" content={fullTitle} />
+    <meta property="og:title" content={shareTitle ?? fullTitle} />
+    <meta name="twitter:title" content={shareTitle ?? fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_GB" />
     {canonical && <meta property="og:url" content={canonical} />}
