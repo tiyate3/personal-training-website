@@ -24,8 +24,8 @@ const {
   image = '/og-image.jpg',
   imageAlt = 'Mustafa the Athlete, personal training in central London',
 } = Astro.props;
-// Browser tab: "Mustafa the Athlete | About"
-const tabTitle = `${BRAND} | ${tab}`;
+// Browser tab: "Mustafa The Athlete | About"
+const tabTitle = `Mustafa The Athlete | ${tab}`;
 // Link previews (Messages, WhatsApp, etc.): "Mustafa | Personal Training in Central London | About"
 const shareTitle = `Mustafa | Personal Training in Central London | ${tab}`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
