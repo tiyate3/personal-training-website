@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import { WHATSAPP_URL } from '../config';
 ---
 
-<a class="fab" href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label="Message Mustafa on WhatsApp">
+<a class="fab" href={WHATSAPP_URL} target="_blank" rel="noopener" data-umami-event="WhatsApp click" aria-label="Message Mustafa on WhatsApp">
   <Icon name="whatsapp" />
   <span class="tip" aria-hidden="true">Book a session</span>
 </a>

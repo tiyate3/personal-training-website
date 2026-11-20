@@ -16,6 +16,7 @@ const { label = 'Message me on WhatsApp', variant = 'primary', class: className 
   href={WHATSAPP_URL}
   target="_blank"
   rel="noopener"
+  data-umami-event="WhatsApp click"
 >
   {icon && <Icon name="whatsapp" />}
   <span>{label}</span>

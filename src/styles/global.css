@@ -61,6 +61,10 @@
   box-sizing: border-box;
 }
 
+main {
+  background: var(--bg);
+}
+
 html {
   /* Black behind the page, so the iPhone's bounce past the top or bottom shows black (matching
      the header and footer) instead of white. The page itself stays white via body. */
@@ -70,9 +74,11 @@ html {
   scroll-padding-top: var(--header-h);
 }
 
+/* Body is black too (Safari on iPhone colours its bottom bar and the bounce area from it);
+   the page content gets its white from <main> instead */
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--black);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1.0625rem;

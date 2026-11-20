@@ -60,10 +60,6 @@ const enquiryOptions = {
     </select>
   </div>
   <div class="field field--wide">
-    <label for="enq-injuries">Any injuries or anything I should know about? <span class="optional">(optional)</span></label>
-    <textarea id="enq-injuries" name="injuries" rows="2"></textarea>
-  </div>
-  <div class="field field--wide">
     <label for="enq-message">Message / what are your goals?</label>
     <textarea id="enq-message" name="message" rows="4" required></textarea>
   </div>
@@ -76,8 +72,21 @@ const enquiryOptions = {
   </div>
   <label class="consent field--wide">
     <input type="checkbox" name="consent" value="Yes" required />
-    <span>I'm happy for Mustafa to contact me about my enquiry</span>
+    <span>
+      I'm happy for Mustafa to contact me about my enquiry and agree to the
+      {' '}<button class="privacy-toggle" type="button" aria-expanded="false" aria-controls="enq-privacy">privacy policy</button>.
+    </span>
   </label>
+  <!-- Opened by "privacy policy" in the tickbox line above -->
+  <div class="privacy field--wide" id="enq-privacy" hidden>
+    <p>
+      I collect your name, email, phone number (optional) and the details you give in this form so I can
+      reply to your enquiry and plan your training. Submissions are sent through Web3Forms to my email and
+      aren't shared with anyone else or used for marketing. I keep enquiries for up to 12 months unless you
+      become a client. To see, change or delete your data, message me on WhatsApp or email
+      {' '}<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+    </p>
+  </div>
   <div class="actions field--wide">
     <button class="btn btn--ghost book-submit" type="submit">Send enquiry</button>
   </div>
@@ -95,9 +104,25 @@ const enquiryOptions = {
   if (form) {
     const status = form.querySelector<HTMLElement>('.enquiry-status');
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    // "privacy policy" in the tickbox line opens and closes the policy text (without ticking the box)
+    const privacyToggle = form.querySelector<HTMLButtonElement>('.privacy-toggle');
+    const privacyText = form.querySelector<HTMLElement>('#enq-privacy');
+    privacyToggle?.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (!privacyText) return;
+      privacyText.hidden = !privacyText.hidden;
+      privacyToggle.setAttribute('aria-expanded', String(!privacyText.hidden));
+    });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const data = new FormData(form);
+      // Honeypot: people never see the botcheck box, so if it's ticked a bot filled the form in.
+      // Show the thank-you as normal so the bot moves on, but send nothing.
+      if (data.get('botcheck')) {
+        form.hidden = true;
+        if (done) done.hidden = false;
+        return;
+      }
       const mailto = form.dataset.mailto;
       if (mailto) {
         const line = (label: string, key: string) => `${label}: ${data.get(key) || '-'}`;
@@ -110,9 +135,6 @@ const enquiryOptions = {
           line('Training experience', 'experience'),
           line('How they heard about me', 'heard'),
           line('Happy to be contacted', 'consent'),
-          '',
-          'Injuries / anything to know:',
-          String(data.get('injuries') || '-'),
           '',
           'Goals:',
           String(data.get('message') ?? ''),
@@ -219,6 +241,38 @@ const enquiryOptions = {
     height: 1.1rem;
     margin: 0.2rem 0 0;
     accent-color: var(--accent);
+  }
+  /* "privacy policy" in the tickbox line: underlined, opens the policy text beneath */
+  .privacy-toggle {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .privacy-toggle:hover,
+  .privacy-toggle:focus-visible {
+    text-decoration-thickness: 2px;
+  }
+  .privacy {
+    margin-top: -0.5rem;
+    padding-left: 1.85rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .privacy p {
+    max-width: 38rem;
+    margin: 0.6rem 0 0;
+    line-height: 1.55;
+  }
+  .privacy a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
   .enquiry .actions {
     margin-top: 0.75rem;
