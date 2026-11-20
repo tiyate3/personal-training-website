@@ -6,7 +6,8 @@ import { BRAND } from '../config';
 import icon from '../assets/mustafatheathlete-icon.svg';
 
 interface Props {
-  title: string;
+  /** Name of the page, e.g. "About". Builds the tab title and the link-preview title. */
+  tab: string;
   description: string;
   /** Optional structured data (schema.org JSON-LD) for this page. */
   schema?: object;
@@ -14,19 +15,19 @@ interface Props {
   image?: string;
   /** Alt text for the share image. */
   imageAlt?: string;
-  /** Title shown in link previews (WhatsApp, Instagram, etc.). Defaults to the page title. */
-  shareTitle?: string;
 }
 
 const {
-  title,
+  tab,
   description,
   schema,
   image = '/og-image.jpg',
   imageAlt = 'Mustafa the Athlete, personal training in central London',
-  shareTitle,
 } = Astro.props;
-const fullTitle = title.includes(BRAND) ? title : `${title} | ${BRAND}`;
+// Browser tab: "Mustafa the Athlete | About"
+const tabTitle = `${BRAND} | ${tab}`;
+// Link previews (Messages, WhatsApp, etc.): "Mustafa | Personal Training in Central London | About"
+const shareTitle = `Mustafa | Personal Training in Central London | ${tab}`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 // Share image as a full live URL (social sites ignore relative paths), including the deploy base
 const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
@@ -38,7 +39,7 @@ const ogImage = new URL(`${base}/${image.replace(/^\/+/, '')}`, Astro.site).href
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
+    <title>{tabTitle}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href={icon.src} />
@@ -46,8 +47,8 @@ const ogImage = new URL(`${base}/${image.replace(/^\/+/, '')}`, Astro.site).href
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={BRAND} />
-    <meta property="og:title" content={shareTitle ?? fullTitle} />
-    <meta name="twitter:title" content={shareTitle ?? fullTitle} />
+    <meta property="og:title" content={shareTitle} />
+    <meta name="twitter:title" content={shareTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_GB" />
     {canonical && <meta property="og:url" content={canonical} />}

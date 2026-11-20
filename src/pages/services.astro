@@ -24,7 +24,7 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
 ---
 
 <Layout
-  title="Personal Training Services in Central London"
+  tab="Services"
   description={`Strength & conditioning, sport-specific training, calisthenics, body recomposition, mobility and rehabilitation. One-to-one personal training in ${BASE_AREA} or private in-home training across central London.`}
 >
   <!-- Three bands, one photo each: photo on the left, then the pair of services, each with its
@@ -105,13 +105,13 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
     height: auto;
   }
   .band--1 .band-media :global(.slot) {
-    width: 52.03125%;
+    width: 53.86%;
   }
   .band--2 .band-media :global(.slot) {
     width: 76.752%;
   }
   .band--3 .band-media :global(.slot) {
-    width: 52.03125%;
+    width: 53.86%;
   }
   .band--3 .band-media :global(img) {
     object-position: right center;
@@ -132,7 +132,7 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
     }
     .band--3 {
       grid-template-columns: minmax(0, 0.97fr) minmax(0, 1.03fr);
-      min-height: clamp(26.5rem, 60vh, 38rem);
+      min-height: clamp(27rem, 63vh, 39rem);
     }
     .band--1,
     .band--3 {
@@ -149,13 +149,13 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
       width: 90%;
     }
     .band--1 .band-media :global(.slot) {
-      width: 56.25%;
+      width: 58.22%;
     }
     .band--2 .band-media :global(.slot) {
       width: 84.24%;
     }
     .band--3 .band-media :global(.slot) {
-      width: 56.25%;
+      width: 58.22%;
     }
     .band-media :global(.slot) {
       justify-self: end;
@@ -165,7 +165,7 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
       padding-block: clamp(3rem, 5.5vw, 5rem);
     }
     .band--3 .band-media {
-      padding-block: clamp(4rem, 7.5vw, 6.8rem);
+      padding-block: clamp(3rem, 5.5vw, 5rem);
     }
     /* In from the photo, and out to the site's 1100px column on the right. Padding percentages are
        of this column (55% of the band), so half the band is 100% / 1.1. */
@@ -177,9 +177,6 @@ const count = COUNT_WORDS[SERVICES.length] ?? String(SERVICES.length);
       padding-block: 0.5rem;
       padding-left: 1.5rem;
       padding-right: 0;
-    }
-    .band--3 .band-text {
-      padding-block: clamp(3rem, 6vw, 4.5rem);
     }
   }
 
